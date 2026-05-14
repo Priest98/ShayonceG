@@ -269,7 +269,7 @@ const CarouselItem = ({ src, index, activeIndex, theme, total }: { src: string, 
 
         {/* Metallic Frame */}
         <div className={`
-          relative w-full h-full overflow-hidden rounded-2xl border backdrop-blur-sm transition-all duration-1000
+          relative w-full h-full overflow-hidden rounded-[3rem] md:rounded-[4rem] border backdrop-blur-sm transition-all duration-1000
           ${isLight ? 'bg-ivory/80 border-black/5 shadow-2xl' : 'bg-smoke/80 border-white/5 shadow-2xl'}
           group-hover:scale-[1.01]
         `}>
@@ -290,7 +290,7 @@ const CarouselItem = ({ src, index, activeIndex, theme, total }: { src: string, 
             muted
             playsInline
             preload={Math.abs(offset) < 2 ? "metadata" : "none"}
-            className={`w-full h-full object-cover transition-transform duration-[4000ms] ease-out scale-[0.7] group-hover:scale-[0.8] ${isLight ? 'grayscale-0' : 'grayscale-[0.2]'}`}
+            className={`w-full h-full object-cover transition-transform duration-[4000ms] ease-out scale-[0.85] group-hover:scale-[0.95] ${isLight ? 'grayscale-0' : 'grayscale-[0.2]'}`}
           />
 
           <div className="absolute inset-0 opacity-[0.04] pointer-events-none mix-blend-overlay bg-[url('https://grainy-gradients.vercel.app/noise.svg')]" />
@@ -387,19 +387,15 @@ const CinematicCarousel = ({ videos, theme }: { videos: string[], theme: 'light'
           </button>
       </div>
 
-      {/* Progress Line */}
-      <div className="absolute bottom-12 left-1/2 -translate-x-1/2 w-48 h-px bg-current/10 flex items-center">
-          <motion.div 
-            animate={{ x: `${(activeIndex / (videos.length - 1)) * 100}%` }}
-            className={`absolute w-12 h-px ${isLight ? 'bg-black' : 'bg-white'}`} 
-          />
-          <div className="absolute -top-6 left-0 w-full flex justify-between">
-              {videos.map((_, i) => (
-                <span key={i} className={`text-[8px] font-mono tracking-tighter transition-opacity duration-700 ${i === activeIndex ? 'opacity-40' : 'opacity-10'}`}>
-                  0{i + 1}
-                </span>
-              ))}
-          </div>
+      {/* Pill Pagination */}
+      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex gap-2 z-30">
+          {videos.map((_, i) => (
+            <button
+              key={i}
+              onClick={() => setActiveIndex(i)}
+              className={`h-1.5 rounded-full transition-all duration-700 pointer-events-auto ${i === activeIndex ? 'w-8 bg-current' : 'w-4 bg-current/20 hover:bg-current/40'}`}
+            />
+          ))}
       </div>
     </div>
   );
