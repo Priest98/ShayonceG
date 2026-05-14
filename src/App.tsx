@@ -197,7 +197,7 @@ const CarouselItem = ({ src, index, activeIndex, theme, total }: { src: string, 
             loop
             muted
             playsInline
-            className={`w-full h-full object-cover transition-transform duration-[4000ms] ease-out scale-115 group-hover:scale-125 ${isLight ? 'grayscale-0' : 'grayscale-[0.2]'}`}
+            className={`w-full h-full object-cover transition-transform duration-[4000ms] ease-out scale-[0.7] group-hover:scale-[0.8] ${isLight ? 'grayscale-0' : 'grayscale-[0.2]'}`}
           />
 
           <div className="absolute inset-0 opacity-[0.04] pointer-events-none mix-blend-overlay bg-[url('https://grainy-gradients.vercel.app/noise.svg')]" />
