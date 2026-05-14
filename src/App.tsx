@@ -216,7 +216,7 @@ const YonceHairSection = ({ theme }: { theme: 'light' | 'dark' }) => {
       <div className="max-w-7xl mx-auto px-8 md:px-12 relative z-10">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-24 items-start mb-24 md:mb-32">
           <motion.div {...MOTION_SECTION}>
-            <h2 className={`text-6xl md:text-[9rem] font-serif lowercase italic tracking-tighter leading-none ${isLight ? 'text-black/60' : 'text-white/40'}`}>
+            <h2 className={`text-[15vw] md:text-[9rem] font-serif lowercase italic tracking-tighter leading-none ${isLight ? 'text-black/60' : 'text-white/40'}`}>
               yonce hair
             </h2>
           </motion.div>
@@ -269,29 +269,29 @@ const YonceHairSection = ({ theme }: { theme: 'light' | 'dark' }) => {
 const CompleteTheLook = ({ theme }: { theme: 'light' | 'dark' }) => {
   const isLight = theme === 'light';
   return (
-    <section className={`py-48 px-8 text-center relative overflow-hidden ${isLight ? 'bg-ivory' : 'bg-[#080808]'}`}>
+    <section className={`py-32 md:py-48 px-8 text-center relative overflow-hidden ${isLight ? 'bg-ivory' : 'bg-[#080808]'}`}>
         <div className="relative z-10 space-y-16">
             <motion.div {...MOTION_SECTION}>
-                <h2 className={`text-5xl md:text-8xl font-serif lowercase italic tracking-tighter mb-8 ${isLight ? 'text-black/60' : 'text-white/40'}`}>
+                <h2 className={`text-[12vw] md:text-[8rem] font-serif lowercase italic tracking-tighter mb-8 ${isLight ? 'text-black/60' : 'text-white/40'}`}>
                     Complete The Look.
                 </h2>
-                <p className={`text-xs md:text-sm leading-loose italic font-light max-w-lg mx-auto ${isLight ? 'text-black/40' : 'text-white/20'}`}>
+                <p className={`text-[10px] md:text-sm leading-loose italic font-light max-w-[280px] md:max-w-lg mx-auto ${isLight ? 'text-black/40' : 'text-white/20'}`}>
                     Custom fashion and luxury hair curated into one refined feminine experience.
                 </p>
             </motion.div>
             
-            <div className="flex flex-col md:flex-row items-center justify-center gap-8">
+            <div className="flex flex-col md:flex-row items-center justify-center gap-6 md:gap-8">
                 <motion.button 
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
-                    className={`px-12 py-6 text-[10px] uppercase tracking-[0.6em] transition-all duration-700 ${isLight ? 'bg-black text-white' : 'bg-white text-black'} rounded-full`}
+                    className={`px-12 py-5 text-[9px] uppercase tracking-[0.6em] transition-all duration-700 ${isLight ? 'bg-black text-white' : 'bg-white text-black'} rounded-full w-full max-w-[280px] md:w-auto`}
                 >
                     Book Consultation
                 </motion.button>
                 <motion.button 
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
-                    className={`px-12 py-6 text-[10px] uppercase tracking-[0.6em] border transition-all duration-700 ${isLight ? 'border-black/10 text-black' : 'border-white/10 text-white'} rounded-full`}
+                    className={`px-12 py-5 text-[9px] uppercase tracking-[0.6em] border transition-all duration-700 ${isLight ? 'border-black/10 text-black' : 'border-white/10 text-white'} rounded-full w-full max-w-[280px] md:w-auto`}
                 >
                     Explore Yonce Hair
                 </motion.button>
@@ -886,19 +886,19 @@ export default function App() {
                      transition={{ delay: 0.5, duration: 2.2, ease: LUXURY_EASE }}
                      className="space-y-6 md:space-y-10"
                   >
-                    <h1 className="text-5xl md:text-[8rem] font-serif leading-none tracking-[0.05em] py-2 md:py-8">
+                    <h1 className="text-[12vw] md:text-[8rem] font-serif leading-none tracking-[0.05em] py-4 md:py-8">
                       YONCE HAIR
                     </h1>
                     <div className="h-[1px] w-12 md:w-24 mx-auto bg-white/20" />
-                    <p className="text-[10px] md:text-sm uppercase tracking-[0.8em] text-white/40">
+                    <p className="text-[10px] md:text-sm uppercase tracking-[0.6em] text-white/40 max-w-[280px] mx-auto md:max-w-none">
                       Luxury hair designed to complete the silhouette.
                     </p>
                     
-                    <div className="flex flex-col md:flex-row gap-6 mt-12">
-                        <button className="px-12 py-5 border border-white/20 text-[9px] uppercase tracking-[0.6em] hover:bg-white hover:text-black transition-all duration-700 rounded-full bg-black/20 backdrop-blur-md">
+                    <div className="flex flex-col md:flex-row gap-4 md:gap-6 mt-12 w-full max-w-[280px] md:max-w-none">
+                        <button className="px-8 py-5 border border-white/10 text-[9px] uppercase tracking-[0.5em] hover:bg-white hover:text-black transition-all duration-700 rounded-full bg-white/[0.03] backdrop-blur-xl">
                             Explore Yonce Hair
                         </button>
-                        <button className="px-12 py-5 border border-white/20 text-[9px] uppercase tracking-[0.6em] hover:bg-white hover:text-black transition-all duration-700 rounded-full bg-black/20 backdrop-blur-md">
+                        <button className="px-8 py-5 border border-white/10 text-[9px] uppercase tracking-[0.5em] hover:bg-white hover:text-black transition-all duration-700 rounded-full bg-white/[0.03] backdrop-blur-xl">
                             Complete The Look
                         </button>
                     </div>
