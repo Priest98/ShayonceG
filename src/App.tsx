@@ -11,6 +11,95 @@ const VIDEOS = [
   "https://player.vimeo.com/external/554160416.hd.mp4?s=e7f34c264a2754630560b216c527f311c1d76378&profile_id=175&oauth2_token_id=57447761",
 ];
 
+const Consultation = () => {
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true, margin: "-10%" });
+
+  return (
+    <section ref={ref} className="relative min-h-screen w-full flex items-center justify-center bg-onyx px-8 py-32 overflow-hidden">
+        {isInView && (
+            <video 
+                src={VIDEOS[3]} 
+                autoPlay 
+                loop 
+                muted 
+                playsInline 
+                preload="metadata"
+                className="absolute inset-0 w-full h-full object-cover opacity-5 filter blur-3xl grayscale"
+            />
+        )}
+        
+        <div className="max-w-6xl w-full relative z-10 flex flex-col lg:flex-row gap-24 items-center">
+        <div className="w-full lg:flex-1 space-y-12">
+            <motion.div {...MOTION_SECTION}>
+                <span className="text-[10px] tracking-[0.8em] text-white/20 uppercase mb-8 block font-light">Experience</span>
+                <h2 className="text-5xl md:text-8xl font-serif lowercase italic tracking-tighter leading-none italic">Virtual<br/>Consultation</h2>
+            </motion.div>
+            
+            <motion.p 
+                {...MOTION_SECTION}
+                transition={{ ...MOTION_SECTION.transition, delay: 0.2 }}
+                className="text-white/30 text-sm md:text-base leading-[2.2] font-light italic max-w-sm"
+            >
+                Connect with our master tailors from anywhere in the world. A private digital dialogue designed to capture your aesthetic intent.
+            </motion.p>
+            
+            <motion.div
+                {...MOTION_SECTION}
+                transition={{ ...MOTION_SECTION.transition, delay: 0.4 }}
+                className="grid grid-cols-1 gap-6 text-[10px] uppercase tracking-[0.6em] text-white/20"
+            >
+                {["Digital Body Mapping", "Sourcing Dialogue", "Silhouette Preview"].map((feature) => (
+                    <div key={feature} className="flex items-center gap-8">
+                        <div className="w-2 h-2 bg-white/5 rounded-full border border-white/10" />
+                        <span>{feature}</span>
+                    </div>
+                ))}
+            </motion.div>
+        </div>
+
+        <motion.div 
+            {...MOTION_SECTION}
+            transition={{ ...MOTION_SECTION.transition, delay: 0.3 }}
+            className="w-full lg:flex-1 max-w-xl p-12 md:p-20 border border-white/5 bg-white/[0.01] backdrop-blur-3xl relative group overflow-hidden"
+        >
+            <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-white/10 to-transparent scale-x-0 group-hover:scale-x-100 transition-transform duration-[2000ms]" />
+            
+            <div className="space-y-10 md:space-y-12">
+                <div className="space-y-6">
+                    <label className="text-[10px] uppercase tracking-[0.6em] text-white/20 block">Full Identity</label>
+                    <input type="text" placeholder="Your Name" className="w-full bg-transparent border-b border-white/5 py-6 text-sm tracking-[0.2em] focus:border-white/20 outline-none transition-all duration-700 placeholder:opacity-20" />
+                </div>
+                <div className="space-y-6">
+                    <label className="text-[10px] uppercase tracking-[0.6em] text-white/20 block">Contact</label>
+                    <input type="email" placeholder="Email Address" className="w-full bg-transparent border-b border-white/5 py-6 text-sm tracking-[0.2em] focus:border-white/20 outline-none transition-all duration-700 placeholder:opacity-20" />
+                </div>
+                <div className="space-y-6">
+                    <label className="text-[10px] uppercase tracking-[0.6em] text-white/20 block">Intent</label>
+                    <div className="relative">
+                    <select className="w-full bg-transparent border-b border-white/5 py-6 text-sm tracking-[0.2em] focus:border-white/20 outline-none transition-all duration-700 cursor-pointer appearance-none lowercase italic text-white/40">
+                        <option className="bg-onyx">private commission</option>
+                        <option className="bg-onyx">editorial inquiry</option>
+                        <option className="bg-onyx">bridal evolution</option>
+                    </select>
+                    <ChevronDown className="absolute right-0 top-1/2 -translate-y-1/2 w-4 h-4 text-white/10 pointer-events-none" />
+                    </div>
+                </div>
+                
+                <motion.button
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    className="w-full py-8 bg-white text-black text-[10px] uppercase tracking-[0.8em] hover:bg-transparent hover:text-white border border-white transition-all duration-1000 mt-8"
+                >
+                    Apply for Access
+                </motion.button>
+            </div>
+        </motion.div>
+        </div>
+    </section>
+  );
+};
+
 const TARI_VIDEOS = [
   "/video/tari/tari1.mp4",
   "/video/tari/tari2.mp4",
@@ -82,16 +171,19 @@ const VideoSection = ({ src, title, subtitle, index }: { src: string; title: str
 
   return (
     <section ref={ref} className="relative h-screen w-full flex items-center justify-center overflow-hidden">
-      <motion.div style={{ opacity, scale }} className="absolute inset-0 w-full h-full">
-        <motion.video
-          style={{ y: videoY }}
-          src={src}
-          autoPlay
-          loop
-          muted
-          playsInline
-          className="w-full h-[110%] object-cover grayscale brightness-[0.4]"
-        />
+      <motion.div style={{ opacity, scale }} className="absolute inset-0 w-full h-full bg-black/20 backdrop-blur-3xl">
+        {isInView && (
+          <motion.video
+            style={{ y: videoY }}
+            src={src}
+            autoPlay
+            loop
+            muted
+            playsInline
+            preload="metadata"
+            className="w-full h-[110%] object-cover grayscale brightness-[0.4]"
+          />
+        )}
       </motion.div>
       
       <div className="relative z-10 text-center px-6">
@@ -193,10 +285,11 @@ const CarouselItem = ({ src, index, activeIndex, theme, total }: { src: string, 
           <video
             ref={videoRef}
             src={src}
-            autoPlay
+            autoPlay={isActive}
             loop
             muted
             playsInline
+            preload={Math.abs(offset) < 2 ? "metadata" : "none"}
             className={`w-full h-full object-cover transition-transform duration-[4000ms] ease-out scale-[0.7] group-hover:scale-[0.8] ${isLight ? 'grayscale-0' : 'grayscale-[0.2]'}`}
           />
 
@@ -792,85 +885,8 @@ export default function App() {
              </div>
         </section>
 
-        <section className="relative min-h-screen w-full flex items-center justify-center bg-onyx px-8 py-32 overflow-hidden">
-             <video 
-                src={VIDEOS[3]} 
-                autoPlay 
-                loop 
-                muted 
-                playsInline 
-                className="absolute inset-0 w-full h-full object-cover opacity-5 filter blur-3xl grayscale"
-                loading="lazy"
-             />
-             
-             <div className="max-w-6xl w-full relative z-10 flex flex-col lg:flex-row gap-24 items-center">
-                <div className="w-full lg:flex-1 space-y-12">
-                    <motion.div {...MOTION_SECTION}>
-                        <span className="text-[10px] tracking-[0.8em] text-white/20 uppercase mb-8 block font-light">Experience</span>
-                        <h2 className="text-5xl md:text-8xl font-serif lowercase italic tracking-tighter leading-none italic">Virtual<br/>Consultation</h2>
-                    </motion.div>
-                    
-                    <motion.p 
-                        {...MOTION_SECTION}
-                        transition={{ ...MOTION_SECTION.transition, delay: 0.2 }}
-                        className="text-white/30 text-sm md:text-base leading-[2.2] font-light italic max-w-sm"
-                    >
-                        Connect with our master tailors from anywhere in the world. A private digital dialogue designed to capture your aesthetic intent.
-                    </motion.p>
-                    
-                    <motion.div
-                        {...MOTION_SECTION}
-                        transition={{ ...MOTION_SECTION.transition, delay: 0.4 }}
-                        className="grid grid-cols-1 gap-6 text-[10px] uppercase tracking-[0.6em] text-white/20"
-                    >
-                        {["Digital Body Mapping", "Sourcing Dialogue", "Silhouette Preview"].map((feature) => (
-                           <div key={feature} className="flex items-center gap-8">
-                               <div className="w-2 h-2 bg-white/5 rounded-full border border-white/10" />
-                               <span>{feature}</span>
-                           </div>
-                        ))}
-                    </motion.div>
-                </div>
-
-                <motion.div 
-                    {...MOTION_SECTION}
-                    transition={{ ...MOTION_SECTION.transition, delay: 0.3 }}
-                    className="w-full lg:flex-1 max-w-xl p-12 md:p-20 border border-white/5 bg-white/[0.01] backdrop-blur-3xl relative group overflow-hidden"
-                >
-                    <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-white/10 to-transparent scale-x-0 group-hover:scale-x-100 transition-transform duration-[2000ms]" />
-                    
-                    <div className="space-y-10 md:space-y-12">
-                      <div className="space-y-6">
-                          <label className="text-[10px] uppercase tracking-[0.6em] text-white/20 block">Full Identity</label>
-                          <input type="text" placeholder="Your Name" className="w-full bg-transparent border-b border-white/5 py-6 text-sm tracking-[0.2em] focus:border-white/20 outline-none transition-all duration-700 placeholder:opacity-20" />
-                      </div>
-                      <div className="space-y-6">
-                          <label className="text-[10px] uppercase tracking-[0.6em] text-white/20 block">Contact</label>
-                          <input type="email" placeholder="Email Address" className="w-full bg-transparent border-b border-white/5 py-6 text-sm tracking-[0.2em] focus:border-white/20 outline-none transition-all duration-700 placeholder:opacity-20" />
-                      </div>
-                      <div className="space-y-6">
-                          <label className="text-[10px] uppercase tracking-[0.6em] text-white/20 block">Intent</label>
-                          <div className="relative">
-                            <select className="w-full bg-transparent border-b border-white/5 py-6 text-sm tracking-[0.2em] focus:border-white/20 outline-none transition-all duration-700 cursor-pointer appearance-none lowercase italic text-white/40">
-                                <option className="bg-onyx">private commission</option>
-                                <option className="bg-onyx">editorial inquiry</option>
-                                <option className="bg-onyx">bridal evolution</option>
-                            </select>
-                            <ChevronDown className="absolute right-0 top-1/2 -translate-y-1/2 w-4 h-4 text-white/10 pointer-events-none" />
-                          </div>
-                      </div>
-                      
-                      <motion.button
-                          whileHover={{ scale: 1.02 }}
-                          whileTap={{ scale: 0.98 }}
-                          className="w-full py-8 bg-white text-black text-[10px] uppercase tracking-[0.8em] hover:bg-transparent hover:text-white border border-white transition-all duration-1000 mt-8"
-                      >
-                          Apply for Access
-                      </motion.button>
-                    </div>
-                </motion.div>
-             </div>
-        </section>
+        {/* Virtual Consultation Section */}
+        <Consultation />
 
         <section className="min-h-screen bg-onyx flex flex-col items-center justify-center px-8 text-center relative overflow-hidden py-48">
             <div className="relative z-10 space-y-32">
