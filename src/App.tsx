@@ -106,6 +106,206 @@ const TARI_VIDEOS = [
   "/video/tari/tari3.mp4",
 ];
 
+const HAIR_COLLECTION = [
+  { id: 1, src: "/image/hair1.png", title: "Bone Straight", category: "The Silk Edit" },
+  { id: 2, src: "/image/hair2.png", title: "Deep Wave", category: "Liquid Motion" },
+  { id: 3, src: "/image/hair3.png", title: "Burgundy Unit", category: "The Archive" },
+  { id: 4, src: "https://player.vimeo.com/external/371433846.hd.mp4?s=228a6358486049286d9d1be6a2469493922eb734&profile_id=170&oauth2_token_id=57447761", title: "Bridal Install", category: "Eternal Silhouette", isVideo: true },
+];
+
+const HairCarouselItem = ({ item, index, activeIndex, theme, onNext, onPrev }: { item: any, index: number, activeIndex: number, theme: 'light' | 'dark', onNext: () => void, onPrev: () => void }) => {
+  const isLight = theme === 'light';
+  const offset = index - activeIndex;
+  const isActive = offset === 0;
+
+  return (
+    <motion.div
+      initial={false}
+      animate={{
+        scale: isActive ? 1 : (window.innerWidth < 768 ? 0.75 : 0.8),
+        opacity: isActive ? 1 : 0.15,
+        x: window.innerWidth < 768 ? `${offset * 105}%` : `${offset * 60}%`,
+        zIndex: isActive ? 20 : 10,
+        filter: isActive ? 'blur(0px)' : (window.innerWidth < 768 ? 'blur(12px)' : 'blur(8px)'),
+      }}
+      transition={{ duration: 1.2, ease: LUXURY_EASE }}
+      className="absolute top-0 left-0 w-full h-full flex items-center justify-center pointer-events-none"
+    >
+      <motion.div 
+        drag="x"
+        dragConstraints={{ left: 0, right: 0 }}
+        onDragEnd={(_, info) => {
+          if (info.offset.x > 50) onPrev();
+          else if (info.offset.x < -50) onNext();
+        }}
+        className={`relative w-[85vw] md:w-[35vw] aspect-[4/5] pointer-events-auto group`}
+      >
+        {/* Deep Wine / Espresso Glow behind active slide */}
+        {isActive && (
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: [0.15, 0.25, 0.15] }}
+            transition={{ duration: 4, repeat: Infinity }}
+            className={`absolute -inset-16 rounded-[4rem] blur-[120px] pointer-events-none ${isLight ? 'bg-[#4A2D2D]' : 'bg-[#2D1B1B]'}`} 
+          />
+        )}
+
+        <div className={`
+          relative w-full h-full overflow-hidden rounded-[3rem] md:rounded-[4rem] border backdrop-blur-sm transition-all duration-1000
+          ${isLight ? 'bg-ivory/80 border-black/5 shadow-2xl' : 'bg-smoke/80 border-white/5 shadow-2xl'}
+          group-hover:scale-[1.01]
+        `}>
+           {/* Champagne Sweep */}
+           <div className="absolute inset-0 z-10 pointer-events-none overflow-hidden">
+            <motion.div
+              animate={{ x: ['-100%', '200%'] }}
+              transition={{ duration: 5, repeat: Infinity, ease: "linear", repeatDelay: 5 }}
+              className={`absolute top-0 bottom-0 w-1/2 skew-x-[45deg] bg-gradient-to-r from-transparent via-[#D4AF37]/10 to-transparent`}
+            />
+          </div>
+
+          {item.isVideo ? (
+            <video
+              src={item.src}
+              autoPlay={isActive}
+              loop
+              muted
+              playsInline
+              className={`w-full h-full object-cover transition-transform duration-[4000ms] ease-out scale-[0.85] group-hover:scale-[0.95] ${isLight ? 'grayscale-0' : 'grayscale-[0.1]'}`}
+            />
+          ) : (
+            <img 
+              src={item.src} 
+              alt={item.title} 
+              className={`w-full h-full object-cover transition-transform duration-[4000ms] ease-out scale-[0.85] group-hover:scale-[0.95] ${isLight ? 'grayscale-0' : 'grayscale-[0.1]'}`}
+            />
+          )}
+
+          <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-60" />
+          
+          <div className="absolute bottom-12 left-12 z-20">
+            <motion.span 
+              initial={{ opacity: 0, y: 10 }}
+              animate={isActive ? { opacity: 0.4, y: 0 } : { opacity: 0 }}
+              className="text-[8px] uppercase tracking-[0.6em] mb-3 block"
+            >
+               {item.category}
+            </motion.span>
+            <motion.h3 
+              initial={{ opacity: 0, y: 10 }}
+              animate={isActive ? { opacity: 1, y: 0 } : { opacity: 0 }}
+              className="text-2xl font-serif lowercase italic"
+            >
+              {item.title}
+            </motion.h3>
+          </div>
+        </div>
+      </motion.div>
+    </motion.div>
+  );
+};
+
+const YonceHairSection = ({ theme }: { theme: 'light' | 'dark' }) => {
+  const [activeIndex, setActiveIndex] = useState(0);
+  const isLight = theme === 'light';
+  const next = () => setActiveIndex((prev) => (prev + 1) % HAIR_COLLECTION.length);
+  const prev = () => setActiveIndex((prev) => (prev - 1 + HAIR_COLLECTION.length) % HAIR_COLLECTION.length);
+
+  return (
+    <section className={`relative py-32 md:py-48 overflow-hidden transition-colors duration-1000 ${isLight ? 'bg-white' : 'bg-[#0A0A0A]'}`}>
+      <div className="max-w-7xl mx-auto px-8 md:px-12 relative z-10">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-24 items-start mb-24 md:mb-32">
+          <motion.div {...MOTION_SECTION}>
+            <h2 className={`text-6xl md:text-[9rem] font-serif lowercase italic tracking-tighter leading-none ${isLight ? 'text-black/60' : 'text-white/40'}`}>
+              yonce hair
+            </h2>
+          </motion.div>
+          
+          <div className="md:pt-12 space-y-8 md:text-right md:items-end flex flex-col">
+            <motion.p 
+              {...MOTION_SECTION}
+              transition={{ ...MOTION_SECTION.transition, delay: 0.2 }}
+              className={`max-w-xs text-xs md:text-sm leading-loose italic font-light ${isLight ? 'text-black/50' : 'text-white/30'}`}
+            >
+              Luxury hair pieces designed to complete the silhouette. Crafted for softness, movement, elegance, and feminine presence.
+            </motion.p>
+            <motion.div 
+              {...MOTION_SECTION}
+              className={`h-px w-16 ${isLight ? 'bg-black/10' : 'bg-white/10'}`} 
+            />
+          </div>
+        </div>
+
+        <div className="relative h-[60vh] md:h-[80vh] flex items-center justify-center">
+          <AnimatePresence initial={false}>
+            {HAIR_COLLECTION.map((item, i) => (
+              <HairCarouselItem 
+                key={item.id} 
+                item={item} 
+                index={i} 
+                activeIndex={activeIndex} 
+                theme={theme}
+                onNext={next}
+                onPrev={prev}
+              />
+            ))}
+          </AnimatePresence>
+
+          <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex gap-3 z-30">
+            {HAIR_COLLECTION.map((_, i) => (
+              <button
+                key={i}
+                onClick={() => setActiveIndex(i)}
+                className={`h-1 rounded-full transition-all duration-700 ${i === activeIndex ? 'w-12 bg-[#D4AF37]' : 'w-4 bg-current/10'}`}
+              />
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+};
+
+const CompleteTheLook = ({ theme }: { theme: 'light' | 'dark' }) => {
+  const isLight = theme === 'light';
+  return (
+    <section className={`py-48 px-8 text-center relative overflow-hidden ${isLight ? 'bg-ivory' : 'bg-[#080808]'}`}>
+        <div className="relative z-10 space-y-16">
+            <motion.div {...MOTION_SECTION}>
+                <h2 className={`text-5xl md:text-8xl font-serif lowercase italic tracking-tighter mb-8 ${isLight ? 'text-black/60' : 'text-white/40'}`}>
+                    Complete The Look.
+                </h2>
+                <p className={`text-xs md:text-sm leading-loose italic font-light max-w-lg mx-auto ${isLight ? 'text-black/40' : 'text-white/20'}`}>
+                    Custom fashion and luxury hair curated into one refined feminine experience.
+                </p>
+            </motion.div>
+            
+            <div className="flex flex-col md:flex-row items-center justify-center gap-8">
+                <motion.button 
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    className={`px-12 py-6 text-[10px] uppercase tracking-[0.6em] transition-all duration-700 ${isLight ? 'bg-black text-white' : 'bg-white text-black'} rounded-full`}
+                >
+                    Book Consultation
+                </motion.button>
+                <motion.button 
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    className={`px-12 py-6 text-[10px] uppercase tracking-[0.6em] border transition-all duration-700 ${isLight ? 'border-black/10 text-black' : 'border-white/10 text-white'} rounded-full`}
+                >
+                    Explore Yonce Hair
+                </motion.button>
+            </div>
+        </div>
+        
+        {/* Subtle Espresso/Wine gradient for depth */}
+        <div className="absolute inset-0 opacity-20 pointer-events-none">
+            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full bg-[radial-gradient(circle_at_50%_50%,#2D1B1B,transparent)]" />
+        </div>
+    </section>
+  );
+};
+
 // Motion Constants
 const LUXURY_EASE = [0.22, 1, 0.36, 1];
 const MOTION_SECTION = {
@@ -701,6 +901,12 @@ export default function App() {
         />
 
         <TariCollection theme={theme} />
+
+        {/* Yonce Hair Section */}
+        <YonceHairSection theme={theme} />
+        
+        {/* Complete The Look CTA */}
+        <CompleteTheLook theme={theme} />
 
         {/* The Designer Section */}
         <section className={`relative min-h-screen w-full flex items-center justify-center py-32 px-8 md:px-12 overflow-hidden transition-colors duration-1000 ${theme === 'light' ? 'bg-[#FDFCFB]' : 'bg-onyx'}`}>
