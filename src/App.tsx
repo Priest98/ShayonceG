@@ -172,7 +172,6 @@ const VideoSection = ({ src, title, subtitle, index }: { src: string; title: str
   return (
     <section ref={ref} className="relative h-screen w-full flex items-center justify-center overflow-hidden">
       <motion.div style={{ opacity, scale }} className="absolute inset-0 w-full h-full bg-black/20 backdrop-blur-3xl">
-        {isInView && (
           <motion.video
             style={{ y: videoY }}
             src={src}
@@ -180,10 +179,9 @@ const VideoSection = ({ src, title, subtitle, index }: { src: string; title: str
             loop
             muted
             playsInline
-            preload="metadata"
+            preload="auto"
             className="w-full h-[110%] object-cover grayscale brightness-[0.4]"
           />
-        )}
       </motion.div>
       
       <div className="relative z-10 text-center px-6">
@@ -341,13 +339,6 @@ const CinematicCarousel = ({ videos, theme }: { videos: string[], theme: 'light'
 
   const next = () => setActiveIndex((prev) => (prev + 1) % videos.length);
   const prev = () => setActiveIndex((prev) => (prev - 1 + videos.length) % videos.length);
-
-  // Autoplay
-  useEffect(() => {
-    if (isHovered) return;
-    const timer = setInterval(next, 8000);
-    return () => clearInterval(timer);
-  }, [isHovered]);
 
   // Wheel handling
   const handleWheel = (e: React.WheelEvent) => {
@@ -726,7 +717,7 @@ export default function App() {
                         <img 
                           src="/image/visionary.jpg" 
                           alt="Shayonce G" 
-                          className="w-full aspect-[4/5] object-cover grayscale brightness-90 group-hover:grayscale-0 group-hover:scale-105 transition-all duration-[2000ms] ease-out" 
+                          className="w-full aspect-[4/5] object-cover group-hover:scale-105 transition-all duration-[2000ms] ease-out" 
                           loading="lazy"
                         />
                         <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-60" />
