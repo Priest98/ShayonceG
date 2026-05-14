@@ -652,6 +652,14 @@ export default function App() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [loading, setLoading] = useState(true);
   const [theme, setTheme] = useState<'light' | 'dark'>('dark');
+  const [heroIndex, setHeroIndex] = useState(0);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setHeroIndex((prev) => (prev + 1) % 2);
+    }, 10000);
+    return () => clearInterval(timer);
+  }, []);
 
   useEffect(() => {
     const lenis = new Lenis({
@@ -806,51 +814,123 @@ export default function App() {
       <main>
         {/* Hero Section */}
         <section className="relative h-screen w-full flex items-center justify-center overflow-hidden">
-          <motion.div 
-            initial={{ scale: 1.1, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            transition={{ duration: 3, ease: LUXURY_EASE }}
-            className="absolute inset-0 w-full h-full"
+          <AnimatePresence mode="wait">
+            {heroIndex === 0 ? (
+              <motion.div 
+                key="hero-shayonce"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 2, ease: LUXURY_EASE }}
+                className="absolute inset-0 w-full h-full flex items-center justify-center"
+              >
+                <motion.div 
+                  initial={{ scale: 1.1 }}
+                  animate={{ scale: 1 }}
+                  transition={{ duration: 3, ease: LUXURY_EASE }}
+                  className="absolute inset-0 w-full h-full"
+                >
+                  <video
+                    src={VIDEOS[0]}
+                    autoPlay
+                    loop
+                    muted
+                    playsInline
+                    className="w-full h-full object-cover brightness-[0.35]"
+                  />
+                </motion.div>
+                
+                <div className="relative z-10 text-center flex flex-col items-center p-6 md:p-12">
+                  <motion.div
+                     initial={{ opacity: 0, y: 30 }}
+                     animate={{ opacity: 1, y: 0 }}
+                     transition={{ delay: 1, duration: 2.2, ease: LUXURY_EASE }}
+                     className="space-y-6 md:space-y-10"
+                  >
+                    <h1 className="text-5xl md:text-[8rem] font-serif leading-none tracking-[0.05em] py-2 md:py-8">
+                      Shayonce G
+                    </h1>
+                    <div className="h-[1px] w-12 md:w-24 mx-auto bg-white/20" />
+                    <p className="text-[10px] md:text-sm uppercase tracking-[0.8em] text-white/40">
+                      The Architecture of Silhouette
+                    </p>
+                  </motion.div>
+                </div>
+              </motion.div>
+            ) : (
+              <motion.div 
+                key="hero-hair"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 2, ease: LUXURY_EASE }}
+                className="absolute inset-0 w-full h-full flex items-center justify-center"
+              >
+                <motion.div 
+                  initial={{ scale: 1.1 }}
+                  animate={{ scale: 1 }}
+                  transition={{ duration: 3, ease: LUXURY_EASE }}
+                  className="absolute inset-0 w-full h-full"
+                >
+                  <img 
+                    src="/image/hair_hero.png" 
+                    className="w-full h-full object-cover brightness-[0.4]"
+                    alt="Yonce Hair Hero"
+                  />
+                </motion.div>
+                
+                <div className="relative z-10 text-center flex flex-col items-center p-6 md:p-12">
+                  <motion.div
+                     initial={{ opacity: 0, y: 30 }}
+                     animate={{ opacity: 1, y: 0 }}
+                     transition={{ delay: 0.5, duration: 2.2, ease: LUXURY_EASE }}
+                     className="space-y-6 md:space-y-10"
+                  >
+                    <h1 className="text-5xl md:text-[8rem] font-serif leading-none tracking-[0.05em] py-2 md:py-8">
+                      YONCE HAIR
+                    </h1>
+                    <div className="h-[1px] w-12 md:w-24 mx-auto bg-white/20" />
+                    <p className="text-[10px] md:text-sm uppercase tracking-[0.8em] text-white/40">
+                      Luxury hair designed to complete the silhouette.
+                    </p>
+                    
+                    <div className="flex flex-col md:flex-row gap-6 mt-12">
+                        <button className="px-12 py-5 border border-white/20 text-[9px] uppercase tracking-[0.6em] hover:bg-white hover:text-black transition-all duration-700 rounded-full bg-black/20 backdrop-blur-md">
+                            Explore Yonce Hair
+                        </button>
+                        <button className="px-12 py-5 border border-white/20 text-[9px] uppercase tracking-[0.6em] hover:bg-white hover:text-black transition-all duration-700 rounded-full bg-black/20 backdrop-blur-md">
+                            Complete The Look
+                        </button>
+                    </div>
+                  </motion.div>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 4, duration: 2 }}
+            className="absolute bottom-12 md:bottom-16 flex flex-col items-center gap-6 z-20"
           >
-            <video
-              src={VIDEOS[0]}
-              autoPlay
-              loop
-              muted
-              playsInline
-              className="w-full h-full object-cover brightness-[0.35]"
+            <span className="text-[9px] uppercase tracking-[0.4em] text-white/20">Explore Archive</span>
+            <motion.div 
+              animate={{ y: [0, 8, 0] }}
+              transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+              className="w-[1px] h-16 md:h-20 bg-gradient-to-b from-white/30 to-transparent" 
             />
           </motion.div>
           
-          <div className="relative z-10 text-center flex flex-col items-center p-6 md:p-12">
-            <motion.div
-               initial={{ opacity: 0, y: 30 }}
-               animate={{ opacity: 1, y: 0 }}
-               transition={{ delay: 2.5, duration: 2.2, ease: LUXURY_EASE }}
-               className="space-y-6 md:space-y-10"
-            >
-              <h1 className="text-5xl md:text-[8rem] font-serif leading-none tracking-[0.05em] py-2 md:py-8">
-                Shayonce G
-              </h1>
-              <div className="h-[1px] w-12 md:w-24 mx-auto bg-white/20" />
-              <p className="text-[10px] md:text-sm uppercase tracking-[0.8em] text-white/40">
-                The Architecture of Silhouette
-              </p>
-            </motion.div>
-            
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 4, duration: 2 }}
-              className="absolute bottom-12 md:bottom-16 flex flex-col items-center gap-6"
-            >
-              <span className="text-[9px] uppercase tracking-[0.4em] text-white/20">Explore Archive</span>
-              <motion.div 
-                animate={{ y: [0, 8, 0] }}
-                transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-                className="w-[1px] h-16 md:h-20 bg-gradient-to-b from-white/30 to-transparent" 
-              />
-            </motion.div>
+          {/* Slide Indicators */}
+          <div className="absolute right-12 top-1/2 -translate-y-1/2 flex flex-col gap-6 z-30">
+              {[0, 1].map((i) => (
+                  <button 
+                    key={i}
+                    onClick={() => setHeroIndex(i)}
+                    className={`w-1 h-8 md:h-12 transition-all duration-1000 ${i === heroIndex ? 'bg-white' : 'bg-white/10'}`}
+                  />
+              ))}
           </div>
         </section>
 
