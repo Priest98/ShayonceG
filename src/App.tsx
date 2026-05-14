@@ -256,7 +256,7 @@ const CarouselItem = ({ src, index, activeIndex, theme, total }: { src: string, 
       transition={{ duration: 1, ease: LUXURY_EASE }}
       className="absolute top-0 left-0 w-full h-full flex items-center justify-center pointer-events-none"
     >
-      <div className={`relative w-[90vw] md:w-[60vw] aspect-video pointer-events-auto group`}>
+      <div className={`relative w-[80vw] md:w-[35vw] aspect-[4/5] pointer-events-auto group`}>
         {/* Ambient Glow behind active video */}
         {isActive && (
           <motion.div 
