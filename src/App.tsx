@@ -714,7 +714,7 @@ export default function App() {
                     <div className={`absolute -inset-4 blur-2xl opacity-10 ${theme === 'light' ? 'bg-ash' : 'bg-white'}`} />
                     <div className={`relative overflow-hidden rounded-2xl border ${theme === 'light' ? 'border-black/5' : 'border-white/5'}`}>
                         <img 
-                          src="/designer_portrait_1778770716466.png" 
+                          src="/image/visionary.jpg" 
                           alt="Shayonce G" 
                           className="w-full aspect-[4/5] object-cover grayscale brightness-90 group-hover:grayscale-0 group-hover:scale-105 transition-all duration-[2000ms] ease-out" 
                           loading="lazy"
