@@ -88,8 +88,8 @@ const Consultation = () => {
                 
                 <motion.button
                     whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
-                    className="w-full py-8 bg-white text-black text-[10px] uppercase tracking-[0.8em] hover:bg-transparent hover:text-white border border-white transition-all duration-1000 mt-8"
+                    whileTap={{ scale: 0.95 }}
+                    className="w-full py-10 md:py-8 bg-white text-black text-[10px] md:text-[11px] uppercase tracking-[0.8em] hover:bg-transparent hover:text-white border border-white transition-all duration-1000 mt-8"
                 >
                     Apply for Access
                 </motion.button>
@@ -109,10 +109,10 @@ const TARI_VIDEOS = [
 // Motion Constants
 const LUXURY_EASE = [0.22, 1, 0.36, 1];
 const MOTION_SECTION = {
-  initial: { opacity: 0, y: 15 },
+  initial: { opacity: 0, y: 10 },
   whileInView: { opacity: 1, y: 0 },
-  viewport: { once: true, margin: "-5%" },
-  transition: { duration: 1, ease: LUXURY_EASE },
+  viewport: { once: true, margin: "-10%" },
+  transition: { duration: 0.8, ease: LUXURY_EASE },
 };
 
 const CustomCursor = () => {
@@ -199,7 +199,7 @@ const VideoSection = ({ src, title, subtitle, index }: { src: string; title: str
           <motion.h2
             animate={isInView ? { y: 0, opacity: 1 } : { y: "100%", opacity: 0 }}
             transition={{ duration: 1.5, delay: 0.4, ease: LUXURY_EASE }}
-            className="text-3xl md:text-6xl tracking-[0.1em] leading-tight"
+            className="text-4xl md:text-8xl tracking-[0.1em] leading-tight font-serif lowercase italic"
           >
             {title}
           </motion.h2>
@@ -218,7 +218,7 @@ const VideoSection = ({ src, title, subtitle, index }: { src: string; title: str
   );
 };
 
-const CarouselItem = ({ src, index, activeIndex, theme, total }: { src: string, index: number, activeIndex: number, theme: 'light' | 'dark', total: number }) => {
+const CarouselItem = ({ src, index, activeIndex, theme, total, onNext, onPrev }: { src: string, index: number, activeIndex: number, theme: 'light' | 'dark', total: number, onNext: () => void, onPrev: () => void }) => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [isPlaying, setIsPlaying] = useState(true);
   const [progress, setProgress] = useState(0);
@@ -247,16 +247,24 @@ const CarouselItem = ({ src, index, activeIndex, theme, total }: { src: string, 
     <motion.div
       initial={false}
       animate={{
-        scale: isActive ? 1 : (window.innerWidth < 768 ? 0.7 : 0.8),
-        opacity: isActive ? 1 : 0.2,
-        x: window.innerWidth < 768 ? `${offset * 90}%` : `${offset * 60}%`,
+        scale: isActive ? 1 : (window.innerWidth < 768 ? 0.75 : 0.8),
+        opacity: isActive ? 1 : 0.15,
+        x: window.innerWidth < 768 ? `${offset * 105}%` : `${offset * 60}%`,
         zIndex: isActive ? 20 : 10,
-        filter: isActive ? 'blur(0px)' : 'blur(8px)',
+        filter: isActive ? 'blur(0px)' : (window.innerWidth < 768 ? 'blur(12px)' : 'blur(8px)'),
       }}
       transition={{ duration: 1, ease: LUXURY_EASE }}
       className="absolute top-0 left-0 w-full h-full flex items-center justify-center pointer-events-none"
     >
-      <div className={`relative w-[80vw] md:w-[35vw] aspect-[4/5] pointer-events-auto group`}>
+      <motion.div 
+        drag="x"
+        dragConstraints={{ left: 0, right: 0 }}
+        onDragEnd={(_, info) => {
+          if (info.offset.x > 50) onPrev();
+          else if (info.offset.x < -50) onNext();
+        }}
+        className={`relative w-[85vw] md:w-[35vw] aspect-[4/5] pointer-events-auto group`}
+      >
         {/* Ambient Glow behind active video */}
         {isActive && (
           <motion.div 
@@ -366,6 +374,8 @@ const CinematicCarousel = ({ videos, theme }: { videos: string[], theme: 'light'
               activeIndex={activeIndex} 
               theme={theme}
               total={videos.length}
+              onNext={next}
+              onPrev={prev}
             />
           ))}
         </AnimatePresence>
@@ -530,12 +540,12 @@ export default function App() {
 
           <button
             onClick={() => setMenuOpen(!menuOpen)}
-            className={`group relative w-12 h-12 md:w-14 md:h-14 flex items-center justify-center border rounded-full transition-all duration-700 ${menuOpen ? 'bg-white border-white' : 'bg-transparent border-white/10 hover:border-white/20'}`}
+            className={`group relative w-12 h-12 md:w-14 md:h-14 flex items-center justify-center border rounded-full transition-all duration-700 pointer-events-auto ${menuOpen ? 'bg-white border-white' : (theme === 'dark' ? 'bg-black/20 border-white/10' : 'bg-white/20 border-black/10')} backdrop-blur-xl`}
           >
             {menuOpen ? <X size={16} className="text-black" /> : (
               <div className="space-y-1.5 flex flex-col items-end">
-                <div className="w-5 h-[1px] bg-white/60 group-hover:w-8 transition-all duration-700" />
-                <div className="w-8 h-[1px] bg-white/60 group-hover:w-5 transition-all duration-700" />
+                <div className={`w-5 h-[1px] ${theme === 'dark' ? 'bg-white/60' : 'bg-black/60'} group-hover:w-8 transition-all duration-700`} />
+                <div className={`w-8 h-[1px] ${theme === 'dark' ? 'bg-white/60' : 'bg-black/60'} group-hover:w-5 transition-all duration-700`} />
               </div>
             )}
           </button>
@@ -628,11 +638,11 @@ export default function App() {
                transition={{ delay: 2.5, duration: 2.2, ease: LUXURY_EASE }}
                className="space-y-6 md:space-y-10"
             >
-              <h1 className="text-5xl md:text-[5rem] font-serif leading-none tracking-[0.1em] py-2">
+              <h1 className="text-5xl md:text-[8rem] font-serif leading-none tracking-[0.05em] py-2 md:py-8">
                 Shayonce G
               </h1>
-              <div className="h-[1px] w-16 mx-auto bg-white/20" />
-              <p className="text-[10px] md:text-xs uppercase tracking-[0.8em] text-white/40">
+              <div className="h-[1px] w-12 md:w-24 mx-auto bg-white/20" />
+              <p className="text-[10px] md:text-sm uppercase tracking-[0.8em] text-white/40">
                 The Architecture of Silhouette
               </p>
             </motion.div>
@@ -869,11 +879,13 @@ export default function App() {
                     ].map((review, i) => (
                         <motion.div
                             key={review.author}
-                            {...MOTION_SECTION}
-                            transition={{ ...MOTION_SECTION.transition, delay: i * 0.2 }}
-                            className={`p-12 md:p-16 border rounded-2xl ${theme === 'light' ? 'bg-white border-black/5' : 'bg-smoke/10 border-white/5'}`}
+                            initial={{ opacity: 0, scale: 0.95 }}
+                            whileInView={{ opacity: 1, scale: 1 }}
+                            transition={{ duration: 1.2, delay: i * 0.2, ease: LUXURY_EASE }}
+                            viewport={{ once: true }}
+                            className={`p-12 md:p-16 border rounded-[3rem] md:rounded-[4rem] ${theme === 'light' ? 'bg-white border-black/5 shadow-xl' : 'bg-smoke/10 border-white/5 shadow-2xl'}`}
                         >
-                            <p className={`text-sm md:text-base leading-loose italic mb-10 font-light ${theme === 'light' ? 'text-black/40' : 'text-white/30'}`}>"{review.text}"</p>
+                            <p className={`text-sm md:text-lg leading-loose italic mb-10 font-light ${theme === 'light' ? 'text-black/40' : 'text-white/30'}`}>"{review.text}"</p>
                             <span className={`text-[9px] uppercase tracking-[0.5em] ${theme === 'light' ? 'text-black/20' : 'text-white/20'}`}>{review.author}</span>
                         </motion.div>
                     ))}
@@ -885,10 +897,10 @@ export default function App() {
         <Consultation />
 
         <section className="min-h-screen bg-onyx flex flex-col items-center justify-center px-8 text-center relative overflow-hidden py-48">
-            <div className="relative z-10 space-y-32">
+             <div className="relative z-10 space-y-32">
                 <motion.h2 
                   {...MOTION_SECTION}
-                  className="text-4xl md:text-6xl max-w-4xl mx-auto leading-tight italic text-white/30 font-serif lowercase tracking-tighter"
+                  className="text-4xl md:text-8xl max-w-5xl mx-auto leading-tight italic text-white/30 font-serif lowercase tracking-tighter"
                 >
                    "We do not design fashion; we capture the space between the threads."
                 </motion.h2>
@@ -898,7 +910,7 @@ export default function App() {
                         {...MOTION_SECTION}
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
-                        className="px-20 py-8 border border-white/5 text-[10px] uppercase tracking-[1em] hover:border-white/40 transition-all duration-1000 bg-white/[0.02]"
+                        className="px-20 py-10 md:py-8 border border-white/5 text-[10px] uppercase tracking-[1em] hover:border-white/40 transition-all duration-1000 bg-white/[0.02] rounded-full"
                     >
                         Enter Archive
                     </motion.button>
@@ -906,7 +918,7 @@ export default function App() {
                     <div className="flex flex-col gap-12 items-center">
                         <motion.div 
                           {...MOTION_SECTION}
-                          className="flex flex-wrap justify-center gap-12 md:gap-24 text-[9px] uppercase tracking-[0.6em] text-white/20"
+                          className="flex flex-wrap justify-center gap-10 md:gap-24 text-[9px] md:text-[10px] uppercase tracking-[0.6em] text-white/20"
                         >
                             {["Inquiries", "Manifesto", "Sustainability", "Legal"].map((link) => (
                                <span key={link} className="hover:text-white transition-colors duration-700 cursor-pointer">{link}</span>
