@@ -329,7 +329,7 @@ const CarouselItem = ({ src, index, activeIndex, theme, total, onNext, onPrev }:
             </span>
           </div>
         </div>
-      </div>
+      </motion.div>
     </motion.div>
   );
 };
