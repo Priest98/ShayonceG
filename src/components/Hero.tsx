@@ -15,6 +15,7 @@ const Hero: React.FC<HeroProps> = ({ onNavigate }) => {
   const totalSlides = 2;
   const lastScrollTime = useRef(0);
   const containerRef = useRef<HTMLElement>(null);
+  const videoRef = useRef<HTMLVideoElement>(null);
 
   const nextSlide = useCallback(() => {
     setHeroIndex((prev) => (prev + 1) % totalSlides);
@@ -24,32 +25,34 @@ const Hero: React.FC<HeroProps> = ({ onNavigate }) => {
     setHeroIndex((prev) => (prev - 1 + totalSlides) % totalSlides);
   }, [totalSlides]);
 
+  // Force video play on mount and slide change
+  useEffect(() => {
+    if (heroIndex === 0 && videoRef.current) {
+      videoRef.current.play().catch(err => console.log("Autoplay blocked or failed:", err));
+    }
+  }, [heroIndex]);
+
   // Automatic Sliding
   useEffect(() => {
     const interval = setInterval(nextSlide, 5000);
     return () => clearInterval(interval);
   }, [nextSlide]);
 
-  // Manual Sliding - Wheel Logic (Robust)
+  // Manual Sliding - Wheel Logic
   useEffect(() => {
     const handleWheel = (e: WheelEvent) => {
-      // Ensure window is defined
       if (typeof window === 'undefined') return;
-      
-      // If we are deep into the page, don't intercept
       if (window.scrollY > 100) return;
 
       const now = Date.now();
-      if (now - lastScrollTime.current < 800) return; // Debounce
+      if (now - lastScrollTime.current < 800) return;
 
       if (Math.abs(e.deltaY) > 20) {
-        // Intercept and slide
         if (e.deltaY > 0) nextSlide();
         else prevSlide();
         
         lastScrollTime.current = now;
         
-        // Prevent page scroll only if we are at the top and sliding
         if (window.scrollY < 50) {
           e.preventDefault();
         }
@@ -68,7 +71,7 @@ const Hero: React.FC<HeroProps> = ({ onNavigate }) => {
   return (
     <section 
       ref={containerRef}
-      className="relative h-screen w-full flex items-center justify-center overflow-hidden z-10 select-none touch-none"
+      className="relative h-screen w-full flex items-center justify-center overflow-hidden z-10 select-none touch-none bg-black"
     >
       <AnimatePresence mode="wait">
         {heroIndex === 0 ? (
@@ -87,12 +90,13 @@ const Hero: React.FC<HeroProps> = ({ onNavigate }) => {
               className="absolute inset-0 w-full h-full bg-black"
             >
               <video
-                src={VIDEOS[0]}
+                ref={videoRef}
+                src="/video/hero.mp4"
                 autoPlay
                 loop
                 muted
                 playsInline
-                className="w-full h-full object-cover brightness-[0.35] opacity-80"
+                className="w-full h-full object-cover brightness-[0.45] opacity-90 transition-opacity duration-1000"
               />
             </motion.div>
             
@@ -103,11 +107,11 @@ const Hero: React.FC<HeroProps> = ({ onNavigate }) => {
                 transition={{ delay: 0.5, duration: 2.2, ease: LUXURY_EASE }}
                 className="text-center space-y-6 md:space-y-10 px-6"
               >
-                <h1 className="text-5xl md:text-[8rem] font-serif leading-none tracking-[0.05em] py-2 md:py-8 uppercase text-white">
+                <h1 className="text-5xl md:text-[8rem] font-serif leading-none tracking-[0.05em] py-2 md:py-8 uppercase text-white shadow-2xl">
                   Shayonce G
                 </h1>
-                <div className="h-[1px] w-12 md:w-24 mx-auto bg-white/20" />
-                <p className="text-[10px] md:text-sm uppercase tracking-[0.8em] text-white/40">
+                <div className="h-[1px] w-12 md:w-24 mx-auto bg-white/30" />
+                <p className="text-[10px] md:text-sm uppercase tracking-[0.8em] text-white/60">
                   The Architecture of Silhouette
                 </p>
               </motion.div>
@@ -132,7 +136,7 @@ const Hero: React.FC<HeroProps> = ({ onNavigate }) => {
                 src="/image/hair_hero.png" 
                 fill
                 priority
-                className="object-cover brightness-[0.4] opacity-90"
+                className="object-cover brightness-[0.5] opacity-100"
                 alt="Yonce Hair Hero"
                 sizes="100vw"
               />
@@ -145,19 +149,19 @@ const Hero: React.FC<HeroProps> = ({ onNavigate }) => {
                  transition={{ delay: 0.5, duration: 2.2, ease: LUXURY_EASE }}
                  className="text-center space-y-6 md:space-y-10 px-6 max-w-4xl"
               >
-                <h1 className="text-5xl md:text-[8rem] font-serif leading-none tracking-[0.05em] py-4 md:py-8 text-white uppercase">
+                <h1 className="text-5xl md:text-[8rem] font-serif leading-none tracking-[0.05em] py-4 md:py-8 text-white uppercase shadow-2xl">
                   Yonce Hair
                 </h1>
-                <div className="h-[1px] w-12 md:w-24 mx-auto bg-white/20" />
-                <p className="text-[10px] md:text-sm uppercase tracking-[0.6em] text-white/40 max-w-[280px] mx-auto md:max-w-none italic font-light">
+                <div className="h-[1px] w-12 md:w-24 mx-auto bg-white/30" />
+                <p className="text-[10px] md:text-sm uppercase tracking-[0.6em] text-white/60 max-w-[280px] mx-auto md:max-w-none italic font-light">
                   Luxury hair designed to complete the silhouette.
                 </p>
                 
                 <div className="flex flex-col md:flex-row gap-4 md:gap-6 mt-12 justify-center">
-                    <button onClick={() => onNavigate('collections')} className="px-10 py-5 border border-white/10 text-[9px] uppercase tracking-[0.5em] hover:bg-white hover:text-black transition-all duration-700 rounded-full bg-white/[0.03] backdrop-blur-2xl text-white">
+                    <button onClick={() => onNavigate('collections')} className="px-10 py-5 border border-white/20 text-[9px] uppercase tracking-[0.5em] hover:bg-white hover:text-black transition-all duration-700 rounded-full bg-white/[0.05] backdrop-blur-2xl text-white">
                         Explore Yonce Hair
                     </button>
-                    <button onClick={() => onNavigate('collections')} className="px-10 py-5 border border-white/10 text-[9px] uppercase tracking-[0.5em] hover:bg-white hover:text-black transition-all duration-700 rounded-full bg-white/[0.03] backdrop-blur-2xl text-white">
+                    <button onClick={() => onNavigate('collections')} className="px-10 py-5 border border-white/10 text-[9px] uppercase tracking-[0.5em] hover:bg-white hover:text-black transition-all duration-700 rounded-full bg-white/[0.05] backdrop-blur-2xl text-white">
                         Complete The Look
                     </button>
                 </div>
@@ -171,15 +175,15 @@ const Hero: React.FC<HeroProps> = ({ onNavigate }) => {
       <div className="absolute inset-x-8 md:inset-x-12 top-1/2 -translate-y-1/2 flex justify-between items-center z-40 pointer-events-none text-white">
           <button 
             onClick={prevSlide}
-            className="w-12 h-12 md:w-16 md:h-16 flex items-center justify-center rounded-full border border-white/5 bg-white/[0.02] backdrop-blur-xl pointer-events-auto transition-all hover:scale-110 active:scale-95 group"
+            className="w-12 h-12 md:w-16 md:h-16 flex items-center justify-center rounded-full border border-white/10 bg-white/[0.05] backdrop-blur-xl pointer-events-auto transition-all hover:scale-110 active:scale-95 group"
           >
-            <ChevronLeft size={20} className="text-white/20 group-hover:text-white transition-colors" />
+            <ChevronLeft size={20} className="text-white/40 group-hover:text-white transition-colors" />
           </button>
           <button 
             onClick={nextSlide}
-            className="w-12 h-12 md:w-16 md:h-16 flex items-center justify-center rounded-full border border-white/5 bg-white/[0.02] backdrop-blur-xl pointer-events-auto transition-all hover:scale-110 active:scale-95 group"
+            className="w-12 h-12 md:w-16 md:h-16 flex items-center justify-center rounded-full border border-white/10 bg-white/[0.05] backdrop-blur-xl pointer-events-auto transition-all hover:scale-110 active:scale-95 group"
           >
-            <ChevronRight size={20} className="text-white/20 group-hover:text-white transition-colors" />
+            <ChevronRight size={20} className="text-white/40 group-hover:text-white transition-colors" />
           </button>
       </div>
 
