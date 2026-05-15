@@ -19,7 +19,6 @@
     @apply font-serif font-light tracking-[0.2em] uppercase;
   }
 
-  /* Custom Colors for Theme */
   :root {
     --color-ivory: #FDFCFB;
     --color-ash: #2A2A2A;
