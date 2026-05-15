@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { ChevronRight, ChevronLeft } from 'lucide-react';
+import Image from 'next/image';
 import { VIDEOS, LUXURY_EASE } from '@/lib/constants';
 
 interface HeroProps {
@@ -80,7 +81,7 @@ const Hero: React.FC<HeroProps> = ({ onNavigate }) => {
               initial={{ scale: 1.1 }}
               animate={{ scale: 1 }}
               transition={{ duration: 3, ease: LUXURY_EASE }}
-              className="absolute inset-0 w-full h-full"
+              className="absolute inset-0 w-full h-full bg-black"
             >
               <video
                 src={VIDEOS[0]}
@@ -88,7 +89,7 @@ const Hero: React.FC<HeroProps> = ({ onNavigate }) => {
                 loop
                 muted
                 playsInline
-                className="w-full h-full object-cover brightness-[0.35]"
+                className="w-full h-full object-cover brightness-[0.35] opacity-80"
               />
             </motion.div>
             
@@ -122,12 +123,15 @@ const Hero: React.FC<HeroProps> = ({ onNavigate }) => {
               initial={{ scale: 1.1 }}
               animate={{ scale: 1 }}
               transition={{ duration: 3, ease: LUXURY_EASE }}
-              className="absolute inset-0 w-full h-full"
+              className="absolute inset-0 w-full h-full bg-black"
             >
-              <img 
+              <Image 
                 src="/image/hair_hero.png" 
-                className="w-full h-full object-cover brightness-[0.4]"
+                fill
+                priority
+                className="object-cover brightness-[0.4] opacity-90"
                 alt="Yonce Hair Hero"
+                sizes="100vw"
               />
             </motion.div>
             
