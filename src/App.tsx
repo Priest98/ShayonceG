@@ -1,7 +1,16 @@
 import { motion, useScroll, useTransform, AnimatePresence, useInView } from "motion/react";
-import { useEffect, useState, useRef, useMemo } from "react";
+import React, { useEffect, useState, useRef, useMemo } from "react";
 import { Menu, X, ChevronDown, MoveRight, Play, Pause } from "lucide-react";
 import Lenis from "lenis";
+
+// Motion Constants
+const LUXURY_EASE = [0.22, 1, 0.36, 1];
+const MOTION_SECTION = {
+  initial: { opacity: 0, y: 10 },
+  whileInView: { opacity: 1, y: 0 },
+  viewport: { once: true, margin: "-10%" },
+  transition: { duration: 0.8, ease: LUXURY_EASE },
+};
 
 // Cinematic Video Assets
 const VIDEOS = [
@@ -11,12 +20,210 @@ const VIDEOS = [
   "https://player.vimeo.com/external/554160416.hd.mp4?s=e7f34c264a2754630560b216c527f311c1d76378&profile_id=175&oauth2_token_id=57447761",
 ];
 
-const Consultation = () => {
-  const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, margin: "-10%" });
+const TARI_VIDEOS = [
+  "/video/tari/tari1.mp4",
+  "/video/tari/tari2.mp4",
+  "/video/tari/tari3.mp4",
+];
+
+const TARI_PRODUCTS = [
+  { id: 'tari-1', title: "Tari Signature Set", price: 85000, src: "/video/tari/tari1.mp4", isVideo: true, desc: "A masterclass in silhouette, designed for absolute presence." },
+  { id: 'tari-2', title: "Tari Luxe Edition", price: 120000, src: "/video/tari/tari2.mp4", isVideo: true, desc: "Premium tailoring meet architectural drape." },
+  { id: 'tari-3', title: "Tari Evening Set", price: 95000, src: "/video/tari/tari3.mp4", isVideo: true, desc: "Fluid motion captured in the stillness of night." },
+  { id: 'tari-4', title: "Tari Bridal Set", price: 150000, src: "/video/tari/tari1.mp4", isVideo: true, desc: "The ultimate transformation for the modern bride." },
+];
+
+const HAIR_COLLECTION = [
+  { id: 1, src: "/image/hair1.png", title: "Bone Straight", category: "The Silk Edit" },
+  { id: 2, src: "/image/hair2.png", title: "Deep Wave", category: "Liquid Motion" },
+  { id: 3, src: "/image/hair3.png", title: "Burgundy Unit", category: "The Archive" },
+  { id: 4, src: "https://player.vimeo.com/external/371433846.hd.mp4?s=228a6358486049286d9d1be6a2469493922eb734&profile_id=170&oauth2_token_id=57447761", title: "Bridal Install", category: "Eternal Silhouette", isVideo: true },
+];
+
+const HAIR_PRODUCTS = [
+  { id: 'hair-1', title: "Bone Straight 24”", price: 350000, src: "/image/hair1.png", desc: "Sleek, liquid-like texture with mirror-shine finish." },
+  { id: 'hair-2', title: "Deep Wave 26”", price: 420000, src: "/image/hair2.png", desc: "Luxurious volume with defined, flowing waves." },
+  { id: 'hair-3', title: "Curly Volume 22”", price: 380000, src: "/image/hair3.png", desc: "Bold, textured curls for an ethereal silhouette." },
+  { id: 'hair-4', title: "Burgundy Unit 24”", price: 450000, src: "/image/hair3.png", desc: "Rich, editorial color with signature frontal finish." },
+];
+const CollectionsPage: React.FC<{ onBack: () => void, theme: 'light' | 'dark', onAddToCart: (product: any) => void, cartCount: number }> = ({ onBack, theme, onAddToCart, cartCount }) => {
+  const isLight = theme === 'light';
+  const containerRef = useRef(null);
 
   return (
-    <section ref={ref} className="relative min-h-screen w-full flex items-center justify-center bg-onyx px-8 py-32 overflow-hidden">
+    <motion.div 
+      ref={containerRef}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      className={`min-h-screen w-full ${isLight ? 'bg-ivory' : 'bg-onyx'}`}
+    >
+      <nav className="fixed top-0 left-0 w-full p-8 md:p-12 z-[70] flex justify-between items-center pointer-events-none">
+        <button 
+          onClick={onBack}
+          className="pointer-events-auto flex items-center gap-4 group"
+        >
+          <div className={`w-10 h-10 rounded-full flex items-center justify-center border ${isLight ? 'border-black/10 bg-black/5' : 'border-white/10 bg-white/5'} backdrop-blur-2xl transition-all group-hover:scale-110 shadow-xl`}>
+             <MoveRight className="rotate-180 w-4 h-4" />
+          </div>
+          <span className="text-[10px] uppercase tracking-[0.4em] opacity-40 group-hover:opacity-100 transition-opacity">Back</span>
+        </button>
+
+        <div className="flex items-center gap-6 pointer-events-auto">
+            <div className={`relative w-12 h-12 rounded-full border flex items-center justify-center backdrop-blur-2xl transition-all hover:scale-110 ${isLight ? 'border-black/10 bg-black/5 text-black' : 'border-white/10 bg-white/5 text-white'}`}>
+                <span className="text-[10px] tracking-widest font-serif">{cartCount}</span>
+                {cartCount > 0 && (
+                    <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} className="absolute -top-1 -right-1 w-3 h-3 bg-[#D4AF37] rounded-full shadow-[0_0_10px_#D4AF37]" />
+                )}
+            </div>
+        </div>
+      </nav>
+
+      <section className="relative h-screen w-full flex items-center justify-center overflow-hidden">
+        <div className="absolute inset-0">
+          <video src={TARI_VIDEOS[1]} autoPlay loop muted playsInline className="w-full h-full object-cover brightness-[0.3]" />
+        </div>
+        <div className="relative z-10 text-center space-y-8 px-8">
+          <motion.span 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 0.4, y: 0 }}
+            transition={{ duration: 1.5 }}
+            className="text-[10px] uppercase tracking-[1em] block"
+          >
+            Curated Selection
+          </motion.span>
+          <motion.h1 
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1.5, delay: 0.2 }}
+            className="text-6xl md:text-[12rem] font-serif lowercase italic tracking-tighter"
+          >
+            Collections
+          </motion.h1>
+          <motion.p
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 0.3 }}
+            transition={{ delay: 0.8, duration: 2 }}
+            className="text-[10px] md:text-xs uppercase tracking-[0.6em] max-w-sm mx-auto leading-loose"
+          >
+            Fashion and luxury hair designed for presence and feminine expression.
+          </motion.p>
+          
+          <motion.div 
+            animate={{ y: [0, 10, 0] }}
+            transition={{ duration: 3, repeat: Infinity }}
+            className="pt-24 opacity-20"
+          >
+            <div className="w-[1px] h-16 bg-gradient-to-b from-white to-transparent mx-auto" />
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Tari Set Collection */}
+      <section id="tari-collection" className="py-32 md:py-48 px-8 md:px-12 relative overflow-hidden">
+        <div className="max-w-7xl mx-auto space-y-32">
+            <div className="text-center space-y-6">
+                <span className="text-[10px] tracking-[0.8em] text-white/20 uppercase">Volume 01</span>
+                <h2 className="text-5xl md:text-9xl font-serif lowercase italic tracking-tighter opacity-40">Tari Set Collection</h2>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-px bg-white/5">
+                {TARI_PRODUCTS.map((product, i) => (
+                    <motion.div
+                        key={product.id}
+                        {...MOTION_SECTION}
+                        transition={{ ...MOTION_SECTION.transition, delay: i * 0.1 }}
+                        className={`group relative p-8 md:p-16 border ${isLight ? 'border-black/5 bg-white/40' : 'border-white/5 bg-white/[0.02]'} backdrop-blur-3xl overflow-hidden transition-all duration-1000`}
+                    >
+                        <div className="aspect-[3/4] overflow-hidden rounded-[2rem] mb-12 relative">
+                            {product.isVideo ? (
+                                <video src={product.src} autoPlay loop muted playsInline className="w-full h-full object-cover grayscale brightness-75 group-hover:grayscale-0 group-hover:scale-110 transition-all duration-[3000ms]" />
+                            ) : (
+                                <img src={product.src} className="w-full h-full object-cover grayscale brightness-75 group-hover:grayscale-0 group-hover:scale-110 transition-all duration-[3000ms]" alt={product.title} />
+                            )}
+                            <div className="absolute inset-0 bg-black/10 opacity-0 group-hover:opacity-100 transition-opacity duration-1000" />
+                        </div>
+
+                        <div className="space-y-6">
+                            <div className="flex justify-between items-end">
+                                <h3 className="text-2xl md:text-3xl font-serif lowercase italic opacity-60 group-hover:opacity-100 transition-opacity">{product.title}</h3>
+                                <span className="text-xs tracking-[0.2em] font-light text-[#D4AF37]">₦{product.price.toLocaleString()}</span>
+                            </div>
+                            <p className="text-[10px] md:text-xs leading-loose italic opacity-30 group-hover:opacity-50 transition-opacity font-light max-w-xs">{product.desc}</p>
+                            
+                            <div className="flex gap-4 pt-4">
+                                <button 
+                                    onClick={() => onAddToCart(product)}
+                                    className={`flex-1 py-5 text-[9px] uppercase tracking-[0.4em] transition-all duration-1000 rounded-full border backdrop-blur-2xl shadow-xl ${isLight ? 'bg-black text-white border-black/10' : 'bg-white text-black border-white/10 shadow-[0_0_20px_rgba(255,255,255,0.05)]'}`}
+                                >
+                                    Add to Cart
+                                </button>
+                                <button className={`px-8 py-5 text-[9px] uppercase tracking-[0.4em] transition-all duration-700 rounded-full border backdrop-blur-2xl ${isLight ? 'border-black/10 hover:bg-black/5' : 'border-white/10 hover:bg-white/5'}`}>
+                                    Details
+                                </button>
+                            </div>
+                        </div>
+                    </motion.div>
+                ))}
+            </div>
+        </div>
+      </section>
+
+      {/* Yonce Hair Collection */}
+      <section id="hair-collection" className={`py-32 md:py-48 px-8 md:px-12 relative overflow-hidden ${isLight ? 'bg-white/5' : 'bg-white/[0.01]'}`}>
+        <div className="max-w-7xl mx-auto space-y-32">
+            <div className="text-center space-y-6">
+                <span className="text-[10px] tracking-[0.8em] text-white/20 uppercase">Volume 02</span>
+                <h2 className="text-5xl md:text-9xl font-serif lowercase italic tracking-tighter opacity-40">Yonce Hair Collection</h2>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
+                {HAIR_PRODUCTS.map((product, i) => (
+                    <motion.div
+                        key={product.id}
+                        {...MOTION_SECTION}
+                        transition={{ ...MOTION_SECTION.transition, delay: i * 0.1 }}
+                        className={`group relative p-6 rounded-[3rem] border ${isLight ? 'border-black/5 bg-white/60 shadow-xl' : 'border-white/5 bg-black/40 shadow-2xl'} backdrop-blur-3xl overflow-hidden transition-all duration-1000 hover:translate-y-[-10px]`}
+                    >
+                        <div className="aspect-[4/5] overflow-hidden rounded-[2.5rem] mb-8 relative">
+                             <img src={product.src} className="w-full h-full object-cover brightness-[0.8] group-hover:scale-105 transition-all duration-[2000ms]" alt={product.title} />
+                             <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-40" />
+                        </div>
+
+                        <div className="space-y-6 px-4 pb-6">
+                            <div className="space-y-2">
+                                <h3 className="text-xl md:text-2xl font-serif lowercase italic opacity-80">{product.title}</h3>
+                                <span className="text-[10px] tracking-[0.4em] font-serif text-[#D4AF37]">₦{product.price.toLocaleString()}</span>
+                            </div>
+                            <p className="text-[9px] md:text-[10px] leading-loose opacity-30 italic font-light line-clamp-2">{product.desc}</p>
+                            
+                            <button 
+                                onClick={() => onAddToCart(product)}
+                                className={`w-full py-5 text-[8px] uppercase tracking-[0.4em] transition-all duration-1000 rounded-full border backdrop-blur-2xl shadow-xl ${isLight ? 'bg-black text-white border-black/10' : 'bg-white text-black border-white/10 shadow-[0_0_20px_rgba(255,255,255,0.05)]'}`}
+                            >
+                                Add to Cart
+                            </button>
+                        </div>
+                    </motion.div>
+                ))}
+            </div>
+        </div>
+      </section>
+
+      <footer className="py-24 text-center">
+         <span className="text-[9px] uppercase tracking-[0.8em] opacity-20">Shayonce G Atelier MMXXVI</span>
+      </footer>
+    </motion.div>
+  );
+};
+
+const Consultation: React.FC<{ theme: 'light' | 'dark' }> = ({ theme }) => {
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true, margin: "-10%" });
+  const isLight = theme === 'light';
+
+  return (
+    <section ref={ref} className={`relative min-h-screen w-full flex items-center justify-center ${isLight ? 'bg-ivory' : 'bg-onyx'} px-8 py-32 overflow-hidden`}>
         {isInView && (
             <video 
                 src={VIDEOS[3]} 
@@ -32,64 +239,38 @@ const Consultation = () => {
         <div className="max-w-6xl w-full relative z-10 flex flex-col lg:flex-row gap-24 items-center">
         <div className="w-full lg:flex-1 space-y-12">
             <motion.div {...MOTION_SECTION}>
-                <span className="text-[10px] tracking-[0.8em] text-white/20 uppercase mb-8 block font-light">Experience</span>
-                <h2 className="text-5xl md:text-8xl font-serif lowercase italic tracking-tighter leading-none italic">Virtual<br/>Consultation</h2>
+                <span className={`text-[10px] tracking-[0.8em] ${isLight ? 'text-black/20' : 'text-white/20'} uppercase mb-8 block font-light`}>Experience</span>
+                <h2 className={`text-5xl md:text-8xl font-serif lowercase italic tracking-tighter leading-none ${isLight ? 'text-black/60' : 'text-white/40'}`}>Virtual<br/>Consultation</h2>
             </motion.div>
             
             <motion.p 
                 {...MOTION_SECTION}
                 transition={{ ...MOTION_SECTION.transition, delay: 0.2 }}
-                className="text-white/30 text-sm md:text-base leading-[2.2] font-light italic max-w-sm"
+                className={`${isLight ? 'text-black/30' : 'text-white/30'} text-sm md:text-base leading-[2.2] font-light italic max-w-sm`}
             >
                 Connect with our master tailors from anywhere in the world. A private digital dialogue designed to capture your aesthetic intent.
             </motion.p>
-            
-            <motion.div
-                {...MOTION_SECTION}
-                transition={{ ...MOTION_SECTION.transition, delay: 0.4 }}
-                className="grid grid-cols-1 gap-6 text-[10px] uppercase tracking-[0.6em] text-white/20"
-            >
-                {["Digital Body Mapping", "Sourcing Dialogue", "Silhouette Preview"].map((feature) => (
-                    <div key={feature} className="flex items-center gap-8">
-                        <div className="w-2 h-2 bg-white/5 rounded-full border border-white/10" />
-                        <span>{feature}</span>
-                    </div>
-                ))}
-            </motion.div>
         </div>
 
         <motion.div 
             {...MOTION_SECTION}
             transition={{ ...MOTION_SECTION.transition, delay: 0.3 }}
-            className="w-full lg:flex-1 max-w-xl p-12 md:p-20 border border-white/5 bg-white/[0.01] backdrop-blur-3xl relative group overflow-hidden"
+            className={`w-full lg:flex-1 max-w-xl p-12 md:p-20 border ${isLight ? 'border-black/5 bg-black/[0.02]' : 'border-white/5 bg-white/[0.01]'} backdrop-blur-3xl relative group overflow-hidden`}
         >
-            <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-white/10 to-transparent scale-x-0 group-hover:scale-x-100 transition-transform duration-[2000ms]" />
-            
             <div className="space-y-10 md:space-y-12">
                 <div className="space-y-6">
-                    <label className="text-[10px] uppercase tracking-[0.6em] text-white/20 block">Full Identity</label>
-                    <input type="text" placeholder="Your Name" className="w-full bg-transparent border-b border-white/5 py-6 text-sm tracking-[0.2em] focus:border-white/20 outline-none transition-all duration-700 placeholder:opacity-20" />
+                    <label className={`text-[10px] uppercase tracking-[0.6em] ${isLight ? 'text-black/20' : 'text-white/20'} block`}>Full Identity</label>
+                    <input type="text" placeholder="Your Name" className={`w-full bg-transparent border-b ${isLight ? 'border-black/5 text-black' : 'border-white/5 text-white'} py-6 text-sm tracking-[0.2em] outline-none transition-all duration-700 placeholder:opacity-20`} />
                 </div>
                 <div className="space-y-6">
-                    <label className="text-[10px] uppercase tracking-[0.6em] text-white/20 block">Contact</label>
-                    <input type="email" placeholder="Email Address" className="w-full bg-transparent border-b border-white/5 py-6 text-sm tracking-[0.2em] focus:border-white/20 outline-none transition-all duration-700 placeholder:opacity-20" />
-                </div>
-                <div className="space-y-6">
-                    <label className="text-[10px] uppercase tracking-[0.6em] text-white/20 block">Intent</label>
-                    <div className="relative">
-                    <select className="w-full bg-transparent border-b border-white/5 py-6 text-sm tracking-[0.2em] focus:border-white/20 outline-none transition-all duration-700 cursor-pointer appearance-none lowercase italic text-white/40">
-                        <option className="bg-onyx">private commission</option>
-                        <option className="bg-onyx">editorial inquiry</option>
-                        <option className="bg-onyx">bridal evolution</option>
-                    </select>
-                    <ChevronDown className="absolute right-0 top-1/2 -translate-y-1/2 w-4 h-4 text-white/10 pointer-events-none" />
-                    </div>
+                    <label className={`text-[10px] uppercase tracking-[0.6em] ${isLight ? 'text-black/20' : 'text-white/20'} block`}>Contact</label>
+                    <input type="email" placeholder="Email Address" className={`w-full bg-transparent border-b ${isLight ? 'border-black/5 text-black' : 'border-white/5 text-white'} py-6 text-sm tracking-[0.2em] outline-none transition-all duration-700 placeholder:opacity-20`} />
                 </div>
                 
                 <motion.button
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.95 }}
-                    className="w-full py-10 md:py-8 bg-white text-black text-[10px] md:text-[11px] uppercase tracking-[0.8em] hover:bg-transparent hover:text-white border border-white transition-all duration-1000 mt-8"
+                    className={`w-full py-8 text-[11px] uppercase tracking-[0.8em] transition-all duration-1000 mt-8 rounded-full border backdrop-blur-xl ${isLight ? 'bg-black text-white border-black/10' : 'bg-white text-black border-white/10 shadow-[0_0_20px_rgba(255,255,255,0.1)]'}`}
                 >
                     Apply for Access
                 </motion.button>
@@ -100,20 +281,7 @@ const Consultation = () => {
   );
 };
 
-const TARI_VIDEOS = [
-  "/video/tari/tari1.mp4",
-  "/video/tari/tari2.mp4",
-  "/video/tari/tari3.mp4",
-];
-
-const HAIR_COLLECTION = [
-  { id: 1, src: "/image/hair1.png", title: "Bone Straight", category: "The Silk Edit" },
-  { id: 2, src: "/image/hair2.png", title: "Deep Wave", category: "Liquid Motion" },
-  { id: 3, src: "/image/hair3.png", title: "Burgundy Unit", category: "The Archive" },
-  { id: 4, src: "https://player.vimeo.com/external/371433846.hd.mp4?s=228a6358486049286d9d1be6a2469493922eb734&profile_id=170&oauth2_token_id=57447761", title: "Bridal Install", category: "Eternal Silhouette", isVideo: true },
-];
-
-const HairCarouselItem = ({ item, index, activeIndex, theme, onNext, onPrev }: { item: any, index: number, activeIndex: number, theme: 'light' | 'dark', onNext: () => void, onPrev: () => void }) => {
+const HairCarouselItem: React.FC<{ item: any, index: number, activeIndex: number, theme: 'light' | 'dark', onNext: () => void, onPrev: () => void }> = ({ item, index, activeIndex, theme, onNext, onPrev }) => {
   const isLight = theme === 'light';
   const offset = index - activeIndex;
   const isActive = offset === 0;
@@ -266,7 +434,7 @@ const YonceHairSection = ({ theme }: { theme: 'light' | 'dark' }) => {
   );
 };
 
-const CompleteTheLook = ({ theme }: { theme: 'light' | 'dark' }) => {
+const CompleteTheLook: React.FC<{ theme: 'light' | 'dark' }> = ({ theme }) => {
   const isLight = theme === 'light';
   return (
     <section className={`py-32 md:py-48 px-8 text-center relative overflow-hidden ${isLight ? 'bg-ivory' : 'bg-[#080808]'}`}>
@@ -304,15 +472,6 @@ const CompleteTheLook = ({ theme }: { theme: 'light' | 'dark' }) => {
         </div>
     </section>
   );
-};
-
-// Motion Constants
-const LUXURY_EASE = [0.22, 1, 0.36, 1];
-const MOTION_SECTION = {
-  initial: { opacity: 0, y: 10 },
-  whileInView: { opacity: 1, y: 0 },
-  viewport: { once: true, margin: "-10%" },
-  transition: { duration: 0.8, ease: LUXURY_EASE },
 };
 
 const CustomCursor = () => {
@@ -357,7 +516,7 @@ const CustomCursor = () => {
   );
 };
 
-const VideoSection = ({ src, title, subtitle, index }: { src: string; title: string; subtitle: string; index: number }) => {
+const VideoSection: React.FC<{ src: string; title: string; subtitle: string; index: number }> = ({ src, title, subtitle, index }) => {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-20%" });
   const { scrollYProgress } = useScroll({
@@ -416,7 +575,7 @@ const VideoSection = ({ src, title, subtitle, index }: { src: string; title: str
   );
 };
 
-const CarouselItem = ({ src, index, activeIndex, theme, total, onNext, onPrev }: { src: string, index: number, activeIndex: number, theme: 'light' | 'dark', total: number, onNext: () => void, onPrev: () => void }) => {
+const CarouselItem: React.FC<{ src: string, index: number, activeIndex: number, theme: 'light' | 'dark', total: number, onNext: () => void, onPrev: () => void }> = ({ src, index, activeIndex, theme, total, onNext, onPrev }) => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [isPlaying, setIsPlaying] = useState(true);
   const [progress, setProgress] = useState(0);
@@ -602,7 +761,7 @@ const CinematicCarousel = ({ videos, theme }: { videos: string[], theme: 'light'
   );
 };
 
-const TariCollection = ({ theme }: { theme: 'light' | 'dark' }) => {
+const TariCollection = ({ theme, onNavigate }: { theme: 'light' | 'dark', onNavigate: () => void }) => {
   const isLight = theme === 'light';
   
   return (
@@ -616,9 +775,14 @@ const TariCollection = ({ theme }: { theme: 'light' | 'dark' }) => {
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-24 md:mb-32 gap-12 text-center md:text-left">
           <motion.div {...MOTION_SECTION} className="space-y-6 flex-1">
             <span className={`text-[10px] tracking-[0.6em] uppercase ${isLight ? 'text-black/20' : 'text-white/20'}`}>The Campaign</span>
-            <h2 className={`text-5xl md:text-8xl font-serif lowercase italic tracking-tighter leading-none ${isLight ? 'text-black/60' : 'text-white/40'}`}>
-              Tari Set Collection
-            </h2>
+            <button 
+              onClick={onNavigate}
+              className="group text-left"
+            >
+              <h2 className={`text-5xl md:text-8xl font-serif lowercase italic tracking-tighter leading-none transition-all group-hover:opacity-60 ${isLight ? 'text-black/60' : 'text-white/40'}`}>
+                Tari Set Collection
+              </h2>
+            </button>
           </motion.div>
           
           <motion.p 
@@ -653,15 +817,24 @@ export default function App() {
   const [loading, setLoading] = useState(true);
   const [theme, setTheme] = useState<'light' | 'dark'>('dark');
   const [heroIndex, setHeroIndex] = useState(0);
+  const [currentPage, setCurrentPage] = useState<'home' | 'collections'>('home');
+  const [cart, setCart] = useState<any[]>([]);
+  const [isCartOpen, setIsCartOpen] = useState(false);
+
+  const addToCart = (product: any) => {
+    setCart((prev) => [...prev, product]);
+    setIsCartOpen(true);
+  };
+
+  const removeFromCart = (id: string) => {
+    setCart((prev) => prev.filter(item => item.id !== id));
+  };
+
+  const cartTotal = cart.reduce((sum, item) => sum + item.price, 0);
 
   useEffect(() => {
-    const timer = setInterval(() => {
-      setHeroIndex((prev) => (prev + 1) % 2);
-    }, 10000);
-    return () => clearInterval(timer);
-  }, []);
+    window.scrollTo(0, 0);
 
-  useEffect(() => {
     const lenis = new Lenis({
       duration: 1.5,
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
@@ -684,7 +857,7 @@ export default function App() {
       clearTimeout(timer);
       lenis.destroy();
     };
-  }, []);
+  }, [currentPage]);
 
   return (
     <div className="bg-onyx relative min-h-screen">
@@ -812,6 +985,15 @@ export default function App() {
       </AnimatePresence>
 
       <main>
+        <AnimatePresence mode="wait">
+          {currentPage === 'home' ? (
+            <motion.div
+              key="home-content"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 1, ease: LUXURY_EASE }}
+            >
         {/* Hero Section */}
         <section className="relative h-screen w-full flex items-center justify-center overflow-hidden">
           <AnimatePresence mode="wait">
@@ -980,7 +1162,7 @@ export default function App() {
           index={1}
         />
 
-        <TariCollection theme={theme} />
+        <TariCollection theme={theme} onNavigate={() => setCurrentPage('collections')} />
 
         {/* Yonce Hair Section */}
         <YonceHairSection theme={theme} />
@@ -1058,7 +1240,7 @@ export default function App() {
                         </h2>
                         <div className={`space-y-12 text-sm md:text-base leading-loose font-light italic ${theme === 'light' ? 'text-black/40' : 'text-white/20'}`}>
                             <p>"We do not follow trends; we create architectural monuments for the body. Choosing us is an investment in a silhouette that remains relevant beyond the season."</p>
-                            <button className={`w-full md:w-auto px-16 py-6 border text-[10px] uppercase tracking-[0.6em] transition-all duration-700 ${theme === 'light' ? 'bg-black text-white border-black hover:bg-transparent hover:text-black' : 'bg-white text-black border-white hover:bg-transparent hover:text-white'}`}>
+                            <button className={`w-full md:w-auto px-16 py-6 border text-[10px] uppercase tracking-[0.6em] transition-all duration-1000 rounded-full backdrop-blur-2xl shadow-2xl ${theme === 'light' ? 'bg-black text-white border-black/10 hover:bg-black/80 shadow-black/20' : 'bg-white text-black border-white/10 hover:bg-white/80 shadow-[0_0_20px_rgba(255,255,255,0.05)]'}`}>
                                 Our Manifesto
                             </button>
                         </div>
@@ -1116,7 +1298,7 @@ export default function App() {
                 <motion.button
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
-                    className="group w-full md:w-auto flex items-center justify-center gap-8 text-[10px] uppercase tracking-[0.8em] text-white/40 hover:text-white transition-all duration-700 px-16 py-8 border border-white/5 hover:border-white/20"
+                    className={`group w-full md:w-auto flex items-center justify-center gap-8 text-[10px] uppercase tracking-[0.8em] transition-all duration-1000 px-16 py-8 border rounded-full backdrop-blur-2xl shadow-2xl ${theme === 'light' ? 'bg-black text-white border-black/10' : 'bg-white text-black border-white/10 shadow-[0_0_20px_rgba(255,255,255,0.05)]'}`}
                 >
                     Start Your Narrative <MoveRight size={16} className="opacity-40 group-hover:translate-x-4 transition-transform duration-700" />
                 </motion.button>
@@ -1171,7 +1353,93 @@ export default function App() {
         </section>
 
         {/* Virtual Consultation Section */}
-        <Consultation />
+        <Consultation theme={theme} />
+
+        <AnimatePresence>
+            {isCartOpen && (
+                <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    className="fixed inset-0 z-[200] bg-black/60 backdrop-blur-xl flex justify-end"
+                >
+                    <motion.div
+                        initial={{ x: "100%" }}
+                        animate={{ x: 0 }}
+                        exit={{ x: "100%" }}
+                        transition={{ duration: 1, ease: LUXURY_EASE }}
+                        className={`w-full max-w-lg h-full ${theme === 'dark' ? 'bg-onyx' : 'bg-ivory'} p-12 relative flex flex-col shadow-2xl`}
+                    >
+                        <button 
+                            onClick={() => setIsCartOpen(false)}
+                            className="absolute top-12 right-12 w-10 h-10 rounded-full border border-current/10 flex items-center justify-center hover:scale-110 transition-transform"
+                        >
+                            <X size={16} />
+                        </button>
+
+                        <div className="flex-1 overflow-y-auto space-y-16 pt-16">
+                            <div className="space-y-4">
+                                <span className="text-[10px] uppercase tracking-[0.8em] opacity-30">Your Selection</span>
+                                <h2 className="text-5xl font-serif lowercase italic tracking-tighter">Shopping Bag</h2>
+                            </div>
+
+                            <div className="space-y-12">
+                                {cart.length === 0 ? (
+                                    <p className="text-sm italic opacity-30">The bag is currently empty.</p>
+                                ) : (
+                                    cart.map((item, i) => (
+                                        <motion.div 
+                                            key={i} 
+                                            initial={{ opacity: 0, y: 20 }}
+                                            animate={{ opacity: 1, y: 0 }}
+                                            transition={{ delay: i * 0.1 }}
+                                            className="flex gap-8 items-center border-b border-current/5 pb-8 group"
+                                        >
+                                            <div className="w-24 h-32 rounded-2xl overflow-hidden border border-current/5">
+                                                {item.isVideo ? (
+                                                    <video src={item.src} autoPlay loop muted playsInline className="w-full h-full object-cover" />
+                                                ) : (
+                                                    <img src={item.src} className="w-full h-full object-cover" />
+                                                )}
+                                            </div>
+                                            <div className="flex-1 space-y-2">
+                                                <h4 className="text-lg font-serif italic">{item.title}</h4>
+                                                <p className="text-[10px] tracking-widest text-[#D4AF37]">₦{item.price.toLocaleString()}</p>
+                                            </div>
+                                            <button 
+                                                onClick={() => removeFromCart(item.id)}
+                                                className="opacity-0 group-hover:opacity-30 hover:!opacity-100 transition-opacity"
+                                            >
+                                                <X size={14} />
+                                            </button>
+                                        </motion.div>
+                                    ))
+                                )}
+                            </div>
+                        </div>
+
+                        <div className="pt-12 space-y-8 border-t border-current/5">
+                            <div className="flex justify-between items-end">
+                                <span className="text-[10px] uppercase tracking-[0.6em] opacity-30">Total Value</span>
+                                <span className="text-2xl font-serif text-[#D4AF37]">₦{cartTotal.toLocaleString()}</span>
+                            </div>
+                            <button 
+                                onClick={() => {
+                                    alert("Proceeding to Paystack Secure Checkout...");
+                                    // Mock Paystack Success
+                                    setIsCartOpen(false);
+                                    setCart([]);
+                                }}
+                                disabled={cart.length === 0}
+                                className={`w-full py-8 text-[11px] uppercase tracking-[0.8em] transition-all duration-1000 rounded-full border backdrop-blur-2xl shadow-2xl ${theme === 'light' ? 'bg-black text-white border-black/10' : 'bg-white text-black border-white/10'} disabled:opacity-20`}
+                            >
+                                Secure Checkout
+                            </button>
+                        </div>
+                    </motion.div>
+                </motion.div>
+            )}
+        </AnimatePresence>
 
         <section className="min-h-screen bg-onyx flex flex-col items-center justify-center px-8 text-center relative overflow-hidden py-48">
              <div className="relative z-10 space-y-32">
@@ -1187,7 +1455,7 @@ export default function App() {
                         {...MOTION_SECTION}
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
-                        className="px-20 py-10 md:py-8 border border-white/5 text-[10px] uppercase tracking-[1em] hover:border-white/40 transition-all duration-1000 bg-white/[0.02] rounded-full"
+                        className="px-20 py-10 md:py-8 border border-white/10 text-[10px] uppercase tracking-[1em] hover:border-white/40 transition-all duration-1000 bg-white/[0.05] backdrop-blur-2xl rounded-full shadow-[0_0_30px_rgba(255,255,255,0.05)]"
                     >
                         Enter Archive
                     </motion.button>
@@ -1223,6 +1491,17 @@ export default function App() {
                <div className="w-full h-full bg-[radial-gradient(circle_at_50%_50%,rgba(255,255,255,0.08),transparent)]" />
             </div>
         </section>
+            </motion.div>
+          ) : (
+            <CollectionsPage 
+              key="collections" 
+              onBack={() => setCurrentPage('home')} 
+              theme={theme} 
+              onAddToCart={addToCart}
+              cartCount={cart.length}
+            />
+          )}
+        </AnimatePresence>
       </main>
 
       <style>{`
@@ -1249,6 +1528,11 @@ export default function App() {
 
         .lenis.lenis-scrolling iframe {
           pointer-events: none;
+        }
+        
+        button, a.button-frozen {
+          pointer-events: none !important;
+          cursor: default !important;
         }
       `}</style>
     </div>
