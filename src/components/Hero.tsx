@@ -25,20 +25,17 @@ const Hero: React.FC<HeroProps> = ({ onNavigate }) => {
     setHeroIndex((prev) => (prev - 1 + totalSlides) % totalSlides);
   }, [totalSlides]);
 
-  // Force video play on mount and slide change
   useEffect(() => {
     if (heroIndex === 0 && videoRef.current) {
-      videoRef.current.play().catch(err => console.log("Autoplay blocked or failed:", err));
+      videoRef.current.play().catch(err => console.log("Autoplay blocked:", err));
     }
   }, [heroIndex]);
 
-  // Automatic Sliding
   useEffect(() => {
     const interval = setInterval(nextSlide, 7000);
     return () => clearInterval(interval);
   }, [nextSlide]);
 
-  // Manual Sliding - Wheel Logic
   useEffect(() => {
     const handleWheel = (e: WheelEvent) => {
       if (typeof window === 'undefined') return;
@@ -105,13 +102,13 @@ const Hero: React.FC<HeroProps> = ({ onNavigate }) => {
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.5, duration: 2.2, ease: LUXURY_EASE }}
-                className="text-center space-y-6 md:space-y-10 px-6"
+                className="text-center space-y-4 md:space-y-10 px-6 w-full"
               >
-                <h1 className="text-5xl md:text-[8rem] font-serif leading-none tracking-[0.05em] py-2 md:py-8 uppercase text-white shadow-2xl">
+                <h1 className="text-4xl sm:text-5xl md:text-[8rem] font-serif leading-none tracking-[0.05em] py-2 md:py-8 uppercase text-white shadow-2xl break-words">
                   Shayonce G
                 </h1>
-                <div className="h-[1px] w-12 md:w-24 mx-auto bg-white/30" />
-                <p className="text-[10px] md:text-sm uppercase tracking-[0.8em] text-white/60">
+                <div className="h-[1px] w-8 md:w-24 mx-auto bg-white/30" />
+                <p className="text-[8px] md:text-sm uppercase tracking-[0.5em] md:tracking-[0.8em] text-white/60">
                   The Architecture of Silhouette
                 </p>
               </motion.div>
@@ -147,21 +144,21 @@ const Hero: React.FC<HeroProps> = ({ onNavigate }) => {
                  initial={{ opacity: 0, y: 30 }}
                  animate={{ opacity: 1, y: 0 }}
                  transition={{ delay: 0.5, duration: 2.2, ease: LUXURY_EASE }}
-                 className="text-center space-y-6 md:space-y-10 px-6 max-w-4xl"
+                 className="text-center space-y-4 md:space-y-10 px-6 max-w-4xl w-full"
               >
-                <h1 className="text-5xl md:text-[8rem] font-serif leading-none tracking-[0.05em] py-4 md:py-8 text-white uppercase shadow-2xl">
+                <h1 className="text-4xl sm:text-5xl md:text-[8rem] font-serif leading-none tracking-[0.05em] py-4 md:py-8 text-white uppercase shadow-2xl break-words">
                   Yonce Hair
                 </h1>
-                <div className="h-[1px] w-12 md:w-24 mx-auto bg-white/30" />
-                <p className="text-[10px] md:text-sm uppercase tracking-[0.6em] text-white/60 max-w-[280px] mx-auto md:max-w-none italic font-light">
+                <div className="h-[1px] w-8 md:w-24 mx-auto bg-white/30" />
+                <p className="text-[8px] md:text-sm uppercase tracking-[0.4em] md:tracking-[0.6em] text-white/60 max-w-[240px] mx-auto md:max-w-none italic font-light">
                   Luxury hair designed to complete the silhouette.
                 </p>
                 
-                <div className="flex flex-col md:flex-row gap-4 md:gap-6 mt-12 justify-center">
-                    <button onClick={() => onNavigate('collections')} className="px-10 py-5 border border-white/20 text-[9px] uppercase tracking-[0.5em] hover:bg-white hover:text-black transition-all duration-700 rounded-full bg-white/[0.05] backdrop-blur-2xl text-white">
+                <div className="flex flex-col sm:flex-row gap-3 md:gap-6 mt-8 md:mt-12 justify-center">
+                    <button onClick={() => onNavigate('collections')} className="px-6 md:px-10 py-4 md:py-5 border border-white/20 text-[8px] md:text-[9px] uppercase tracking-[0.4em] md:tracking-[0.5em] hover:bg-white hover:text-black transition-all duration-700 rounded-full bg-white/[0.05] backdrop-blur-2xl text-white">
                         Explore Yonce Hair
                     </button>
-                    <button onClick={() => onNavigate('collections')} className="px-10 py-5 border border-white/10 text-[9px] uppercase tracking-[0.5em] hover:bg-white hover:text-black transition-all duration-700 rounded-full bg-white/[0.05] backdrop-blur-2xl text-white">
+                    <button onClick={() => onNavigate('collections')} className="px-6 md:px-10 py-4 md:py-5 border border-white/10 text-[8px] md:text-[9px] uppercase tracking-[0.4em] md:tracking-[0.5em] hover:bg-white hover:text-black transition-all duration-700 rounded-full bg-white/[0.05] backdrop-blur-2xl text-white">
                         Complete The Look
                     </button>
                 </div>
@@ -172,28 +169,28 @@ const Hero: React.FC<HeroProps> = ({ onNavigate }) => {
       </AnimatePresence>
 
       {/* Manual Controls */}
-      <div className="absolute inset-x-8 md:inset-x-12 top-1/2 -translate-y-1/2 flex justify-between items-center z-40 pointer-events-none text-white">
+      <div className="absolute inset-x-4 md:inset-x-12 top-1/2 -translate-y-1/2 flex justify-between items-center z-40 pointer-events-none text-white">
           <button 
             onClick={prevSlide}
-            className="w-12 h-12 md:w-16 md:h-16 flex items-center justify-center rounded-full border border-white/10 bg-white/[0.05] backdrop-blur-xl pointer-events-auto transition-all hover:scale-110 active:scale-95 group"
+            className="w-10 h-10 md:w-16 md:h-16 flex items-center justify-center rounded-full border border-white/10 bg-white/[0.05] backdrop-blur-xl pointer-events-auto transition-all hover:scale-110 active:scale-95 group"
           >
-            <ChevronLeft size={20} className="text-white/40 group-hover:text-white transition-colors" />
+            <ChevronLeft size={16} className="text-white/40 group-hover:text-white transition-colors" />
           </button>
           <button 
             onClick={nextSlide}
-            className="w-12 h-12 md:w-16 md:h-16 flex items-center justify-center rounded-full border border-white/10 bg-white/[0.05] backdrop-blur-xl pointer-events-auto transition-all hover:scale-110 active:scale-95 group"
+            className="w-10 h-10 md:w-16 md:h-16 flex items-center justify-center rounded-full border border-white/10 bg-white/[0.05] backdrop-blur-xl pointer-events-auto transition-all hover:scale-110 active:scale-95 group"
           >
-            <ChevronRight size={20} className="text-white/40 group-hover:text-white transition-colors" />
+            <ChevronRight size={16} className="text-white/40 group-hover:text-white transition-colors" />
           </button>
       </div>
 
       {/* Slide Indicators */}
-      <div className="absolute right-8 md:right-12 top-1/2 -translate-y-1/2 flex flex-col gap-6 z-40">
+      <div className="absolute right-4 md:right-12 top-1/2 -translate-y-1/2 flex flex-col gap-4 md:gap-6 z-40">
           {[0, 1].map((i) => (
               <button 
                 key={i}
                 onClick={() => setHeroIndex(i)}
-                className={`w-1.5 h-12 transition-all duration-1000 relative group rounded-full overflow-hidden`}
+                className={`w-1 h-8 md:w-1.5 md:h-12 transition-all duration-1000 relative group rounded-full overflow-hidden`}
               >
                 <div className={`absolute inset-0 w-full h-full transition-all duration-1000 ${i === heroIndex ? 'bg-white shadow-[0_0_20px_#fff]' : 'bg-white/10 group-hover:bg-white/40'}`} />
               </button>
@@ -204,17 +201,16 @@ const Hero: React.FC<HeroProps> = ({ onNavigate }) => {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 4, duration: 2 }}
-        className="absolute bottom-12 flex flex-col items-center gap-6 z-20 pointer-events-none"
+        className="absolute bottom-8 md:bottom-12 flex flex-col items-center gap-4 md:gap-6 z-20 pointer-events-none"
       >
-        <span className="text-[9px] uppercase tracking-[0.4em] text-white/20">Slide to Explore</span>
+        <span className="text-[8px] uppercase tracking-[0.4em] text-white/20">Slide to Explore</span>
         <motion.div 
-          animate={{ y: [0, 10, 0] }}
+          animate={{ y: [0, 8, 0] }}
           transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-          className="w-px h-16 bg-gradient-to-b from-white/30 to-transparent"
+          className="w-px h-12 md:h-16 bg-gradient-to-b from-white/30 to-transparent"
         />
       </motion.div>
       
-      {/* Universal Swipe Support */}
       <motion.div 
         drag="y"
         dragConstraints={{ top: 0, bottom: 0 }}

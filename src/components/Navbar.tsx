@@ -38,13 +38,13 @@ const Navbar: React.FC<NavbarProps> = ({ theme, setTheme, currentPage, setCurren
         >
           <span 
             onClick={() => router.push('/')}
-            className="text-base md:text-xl tracking-[0.4em] font-serif hover:opacity-50 transition-opacity cursor-pointer"
+            className="text-sm md:text-xl tracking-[0.4em] font-serif hover:opacity-50 transition-opacity cursor-pointer"
           >
             SHAYONCE G
           </span>
         </motion.div>
         
-        <div className="flex items-center gap-6 md:gap-16 pointer-events-auto">
+        <div className="flex items-center gap-4 md:gap-16 pointer-events-auto">
           {!menuOpen && (
              <button 
                 onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
@@ -54,10 +54,10 @@ const Navbar: React.FC<NavbarProps> = ({ theme, setTheme, currentPage, setCurren
              </button>
           )}
 
-          <div className="flex items-center gap-6">
+          <div className="flex items-center gap-4 md:gap-6">
             <button
                 onClick={() => setIsCartOpen(true)}
-                className={`relative w-12 h-12 rounded-full border flex items-center justify-center backdrop-blur-xl transition-all hover:scale-110 ${theme === 'dark' ? 'border-white/10 bg-white/5 text-white' : 'border-black/10 bg-black/5 text-black'}`}
+                className={`relative w-10 h-10 md:w-12 md:h-12 rounded-full border flex items-center justify-center backdrop-blur-xl transition-all hover:scale-110 ${theme === 'dark' ? 'border-white/10 bg-white/5 text-white' : 'border-black/10 bg-black/5 text-black'}`}
             >
                 <span className="text-[10px] tracking-widest font-serif">{cartCount}</span>
                 {cartCount > 0 && (
@@ -67,12 +67,12 @@ const Navbar: React.FC<NavbarProps> = ({ theme, setTheme, currentPage, setCurren
 
             <button
                 onClick={() => setMenuOpen(!menuOpen)}
-                className={`group relative w-12 h-12 md:w-14 md:h-14 flex items-center justify-center border rounded-full transition-all duration-700 ${menuOpen ? 'bg-white border-white' : (theme === 'dark' ? 'bg-black/20 border-white/10' : 'bg-white/20 border-black/10')} backdrop-blur-xl`}
+                className={`group relative w-10 h-10 md:w-14 md:h-14 flex items-center justify-center border rounded-full transition-all duration-700 ${menuOpen ? 'bg-white border-white' : (theme === 'dark' ? 'bg-black/20 border-white/10' : 'bg-white/20 border-black/10')} backdrop-blur-xl`}
             >
-                {menuOpen ? <X size={16} className="text-black" /> : (
-                <div className="space-y-1.5 flex flex-col items-end">
-                    <div className={`w-5 h-[1px] ${theme === 'dark' ? 'bg-white/60' : 'bg-black/60'} group-hover:w-8 transition-all duration-700`} />
-                    <div className={`w-8 h-[1px] ${theme === 'dark' ? 'bg-white/60' : 'bg-black/60'} group-hover:w-5 transition-all duration-700`} />
+                {menuOpen ? <X size={14} className="text-black" /> : (
+                <div className="space-y-1 md:space-y-1.5 flex flex-col items-end">
+                    <div className={`w-4 md:w-5 h-[1px] ${theme === 'dark' ? 'bg-white/60' : 'bg-black/60'} group-hover:w-8 transition-all duration-700`} />
+                    <div className={`w-6 md:w-8 h-[1px] ${theme === 'dark' ? 'bg-white/60' : 'bg-black/60'} group-hover:w-5 transition-all duration-700`} />
                 </div>
                 )}
             </button>
@@ -87,52 +87,52 @@ const Navbar: React.FC<NavbarProps> = ({ theme, setTheme, currentPage, setCurren
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[45] bg-onyx/95 backdrop-blur-2xl flex flex-col items-center justify-center p-8 overflow-hidden"
+            className="fixed inset-0 z-[45] bg-onyx/95 backdrop-blur-2xl flex flex-col items-center justify-center p-8 overflow-y-auto"
           >
-            <div className="w-full max-w-7xl flex flex-col md:flex-row gap-16 md:gap-24 justify-between h-full pt-32 pb-12">
-              <div className="flex flex-col gap-6 md:gap-4 flex-1">
+            <div className="w-full max-w-7xl flex flex-col md:flex-row gap-12 md:gap-24 justify-between h-full pt-32 pb-12">
+              <div className="flex flex-col gap-4 md:gap-4 flex-1">
                 {["Collections", "Editorial", "Exploration", "Archive", "Atmosphere"].map((item, i) => (
                   <motion.div
                     key={item}
                     initial={{ opacity: 0, x: -30 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: i * 0.1 + 0.3, duration: 1, ease: LUXURY_EASE }}
-                    className="group flex items-center gap-6 md:gap-10 cursor-pointer text-white"
+                    className="group flex items-center gap-4 md:gap-10 cursor-pointer text-white"
                     onClick={() => {
                         if (item === "Collections") router.push('/collections');
                         else router.push('/');
                         setMenuOpen(false);
                     }}
                   >
-                    <span className="text-[9px] md:text-[10px] text-white/20 font-mono tracking-widest">{String(i + 1).padStart(2, '0')}</span>
-                    <h3 className="text-4xl md:text-8xl text-white/40 group-hover:text-white group-hover:italic transition-all duration-700 font-serif lowercase tracking-tighter">
+                    <span className="text-[8px] md:text-[10px] text-white/20 font-mono tracking-widest">{String(i + 1).padStart(2, '0')}</span>
+                    <h3 className="text-3xl md:text-8xl text-white/40 group-hover:text-white group-hover:italic transition-all duration-700 font-serif lowercase tracking-tighter">
                       {item}
                     </h3>
                   </motion.div>
                 ))}
               </div>
               
-              <div className="flex flex-col justify-end gap-12 md:gap-16 max-w-sm md:text-right md:items-end">
+              <div className="flex flex-col justify-end gap-10 md:gap-16 max-w-sm md:text-right md:items-end">
                 <motion.div
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ delay: 0.8 }}
-                  className="space-y-10"
+                  className="space-y-8"
                 >
                     <button 
                         onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-                        className="md:hidden text-[10px] uppercase tracking-[0.5em] text-white/40 hover:text-white transition-colors py-4 border-b border-white/10 w-full text-left"
+                        className="md:hidden text-[9px] uppercase tracking-[0.4em] text-white/40 hover:text-white transition-colors py-4 border-b border-white/10 w-full text-left"
                     >
                         {theme === 'dark' ? 'Light Mode' : 'Dark Mode'}
                     </button>
 
-                    <p className="text-white/30 text-xs md:text-sm leading-loose font-light italic">
+                    <p className="text-white/30 text-[10px] md:text-sm leading-loose font-light italic">
                     Capturing the profound truths found in the space between silhouettes. A visual study of absence and presence.
                     </p>
                     
                     <div className="flex flex-col gap-4">
-                        <span className="text-[9px] uppercase tracking-[0.6em] text-white/10">Lagos — Paris — London</span>
-                        <div className="flex gap-8 md:justify-end">
+                        <span className="text-[8px] uppercase tracking-[0.6em] text-white/10">Lagos — Paris — London</span>
+                        <div className="flex gap-6 md:justify-end">
                             {["Instagram", "Twitter", "Email"].map(social => (
                                 <span key={social} className="text-[9px] uppercase tracking-[0.4em] text-white/40 hover:text-white transition-colors cursor-pointer">{social}</span>
                             ))}
