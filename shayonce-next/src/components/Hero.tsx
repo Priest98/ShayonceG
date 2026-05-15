@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { VIDEOS, LUXURY_EASE } from '@/lib/constants';
 
@@ -11,6 +11,8 @@ interface HeroProps {
 const Hero: React.FC<HeroProps> = ({ onNavigate }) => {
   const [heroIndex, setHeroIndex] = useState(0);
   const totalSlides = 2;
+  const lastScrollTime = useRef(0);
+  const containerRef = useRef<HTMLElement>(null);
 
   const nextSlide = useCallback(() => {
     setHeroIndex((prev) => (prev + 1) % totalSlides);
@@ -25,26 +27,44 @@ const Hero: React.FC<HeroProps> = ({ onNavigate }) => {
     return () => clearInterval(interval);
   }, [nextSlide]);
 
-  // Handle Wheel Events
-  const handleWheel = (e: React.WheelEvent) => {
-    if (Math.abs(e.deltaY) > 50) {
-      if (e.deltaY > 0) nextSlide();
-      else prevSlide();
+  // Robust wheel handling with event listener to bypass passive restrictions
+  useEffect(() => {
+    const handleWheel = (e: WheelEvent) => {
+      const now = Date.now();
+      if (now - lastScrollTime.current < 1000) return; // 1s debounce for stability
+
+      if (Math.abs(e.deltaY) > 40) {
+        // If we are at the top of the page, we intercept and slide
+        if (window.scrollY < 10) {
+           e.preventDefault();
+           if (e.deltaY > 0) nextSlide();
+           else prevSlide();
+           lastScrollTime.current = now;
+        }
+      }
+    };
+
+    const el = containerRef.current;
+    if (el) {
+      el.addEventListener('wheel', handleWheel, { passive: false });
     }
-  };
+    return () => {
+      if (el) el.removeEventListener('wheel', handleWheel);
+    };
+  }, [nextSlide, prevSlide]);
 
   return (
     <section 
-      onWheel={handleWheel}
-      className="relative h-screen w-full flex items-center justify-center overflow-hidden cursor-ns-resize"
+      ref={containerRef}
+      className="relative h-screen w-full flex items-center justify-center overflow-hidden cursor-ns-resize z-10"
     >
       <AnimatePresence mode="wait">
         {heroIndex === 0 ? (
           <motion.div 
             key="hero-shayonce"
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
+            exit={{ opacity: 0, y: -30 }}
             transition={{ duration: 1.5, ease: LUXURY_EASE }}
             className="absolute inset-0 w-full h-full flex items-center justify-center"
           >
@@ -84,9 +104,9 @@ const Hero: React.FC<HeroProps> = ({ onNavigate }) => {
         ) : (
           <motion.div 
             key="hero-hair"
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
+            exit={{ opacity: 0, y: -30 }}
             transition={{ duration: 1.5, ease: LUXURY_EASE }}
             className="absolute inset-0 w-full h-full flex items-center justify-center"
           >
@@ -132,15 +152,15 @@ const Hero: React.FC<HeroProps> = ({ onNavigate }) => {
         )}
       </AnimatePresence>
 
-      {/* Slide Indicators - Restored from original */}
+      {/* Slide Indicators */}
       <div className="absolute right-8 md:right-12 top-1/2 -translate-y-1/2 flex flex-col gap-6 z-30">
           {[0, 1].map((i) => (
               <button 
                 key={i}
                 onClick={() => setHeroIndex(i)}
-                className={`w-1 h-8 md:h-12 transition-all duration-1000 relative group`}
+                className={`w-1 h-8 md:h-12 transition-all duration-1000 relative group overflow-hidden`}
               >
-                <div className={`absolute inset-0 w-full h-full transition-all duration-1000 ${i === heroIndex ? 'bg-white shadow-[0_0_15px_rgba(255,255,255,0.5)]' : 'bg-white/10 group-hover:bg-white/30'}`} />
+                <div className={`absolute inset-0 w-full h-full transition-all duration-1000 ${i === heroIndex ? 'bg-white shadow-[0_0_15px_rgba(255,255,255,0.5)] scale-y-110' : 'bg-white/10 group-hover:bg-white/30'}`} />
               </button>
           ))}
       </div>
@@ -158,6 +178,17 @@ const Hero: React.FC<HeroProps> = ({ onNavigate }) => {
           className="w-px h-12 bg-gradient-to-b from-white/20 to-transparent"
         />
       </motion.div>
+      
+      {/* Invisible drag layer for mobile swipe support */}
+      <motion.div 
+        drag="y"
+        dragConstraints={{ top: 0, bottom: 0 }}
+        onDragEnd={(_, info) => {
+          if (info.offset.y > 50) prevSlide();
+          else if (info.offset.y < -50) nextSlide();
+        }}
+        className="absolute inset-0 z-0 pointer-events-auto md:hidden"
+      />
     </section>
   );
 };
