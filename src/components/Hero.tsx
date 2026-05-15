@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useCallback, useRef } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion';
 import { ChevronRight, ChevronLeft } from 'lucide-react';
 import Image from 'next/image';
 import { VIDEOS, LUXURY_EASE } from '@/lib/constants';
@@ -17,6 +17,11 @@ const Hero: React.FC<HeroProps> = ({ onNavigate }) => {
   const containerRef = useRef<HTMLElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
 
+  // Parallax effect for mobile immersion
+  const { scrollY } = useScroll();
+  const yParallax = useTransform(scrollY, [0, 1000], [0, 300]);
+  const scaleParallax = useTransform(scrollY, [0, 500], [1, 1.1]);
+
   const nextSlide = useCallback(() => {
     setHeroIndex((prev) => (prev + 1) % totalSlides);
   }, [totalSlides]);
@@ -27,43 +32,14 @@ const Hero: React.FC<HeroProps> = ({ onNavigate }) => {
 
   useEffect(() => {
     if (heroIndex === 0 && videoRef.current) {
-      videoRef.current.play().catch(err => console.log("Autoplay blocked:", err));
+      videoRef.current.play().catch(() => {});
     }
   }, [heroIndex]);
 
   useEffect(() => {
-    const interval = setInterval(nextSlide, 7000);
+    const interval = setInterval(nextSlide, 8000); // Slower for more luxury feel
     return () => clearInterval(interval);
   }, [nextSlide]);
-
-  useEffect(() => {
-    const handleWheel = (e: WheelEvent) => {
-      if (typeof window === 'undefined') return;
-      if (window.scrollY > 100) return;
-
-      const now = Date.now();
-      if (now - lastScrollTime.current < 800) return;
-
-      if (Math.abs(e.deltaY) > 20) {
-        if (e.deltaY > 0) nextSlide();
-        else prevSlide();
-        
-        lastScrollTime.current = now;
-        
-        if (window.scrollY < 50) {
-          e.preventDefault();
-        }
-      }
-    };
-
-    const el = containerRef.current;
-    if (el) {
-      el.addEventListener('wheel', handleWheel, { passive: false });
-    }
-    return () => {
-      if (el) el.removeEventListener('wheel', handleWheel);
-    };
-  }, [nextSlide, prevSlide]);
 
   return (
     <section 
@@ -71,155 +47,138 @@ const Hero: React.FC<HeroProps> = ({ onNavigate }) => {
       className="relative h-screen w-full flex items-center justify-center overflow-hidden z-10 select-none touch-none bg-black"
     >
       <AnimatePresence mode="wait">
-        {heroIndex === 0 ? (
-          <motion.div 
-            key="hero-shayonce"
+        <motion.div 
+            key={heroIndex}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 1.5, ease: LUXURY_EASE }}
+            transition={{ duration: 2, ease: LUXURY_EASE }}
             className="absolute inset-0 w-full h-full"
-          >
+        >
+            {/* Background Layer with Parallax */}
             <motion.div 
-              initial={{ scale: 1.1 }}
-              animate={{ scale: 1 }}
-              transition={{ duration: 3, ease: LUXURY_EASE }}
-              className="absolute inset-0 w-full h-full bg-black"
+                style={{ y: yParallax, scale: scaleParallax }}
+                className="absolute inset-0 w-full h-full bg-black"
             >
-              <video
-                ref={videoRef}
-                src="/video/hero.mp4"
-                autoPlay
-                loop
-                muted
-                playsInline
-                className="w-full h-full object-cover brightness-[0.45] opacity-90 transition-opacity duration-1000"
-              />
+                {heroIndex === 0 ? (
+                    <video
+                        ref={videoRef}
+                        src="/video/hero.mp4"
+                        autoPlay
+                        loop
+                        muted
+                        playsInline
+                        className="w-full h-full object-cover brightness-[0.4] opacity-80"
+                    />
+                ) : (
+                    <Image 
+                        src="/image/hair_hero.png" 
+                        fill
+                        priority
+                        className="object-cover brightness-[0.45] opacity-90"
+                        alt="Yonce Hair Hero"
+                        sizes="100vw"
+                    />
+                )}
             </motion.div>
+
+            {/* Cinematic Gradient Overlay */}
+            <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-transparent to-black/60 pointer-events-none" />
             
-            <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+            {/* Content Layer */}
+            <div className="absolute inset-0 flex items-center justify-center p-6 text-center">
               <motion.div
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.5, duration: 2.2, ease: LUXURY_EASE }}
-                className="text-center space-y-4 md:space-y-10 px-6 w-full"
+                transition={{ delay: 0.8, duration: 2, ease: LUXURY_EASE }}
+                className="space-y-6 md:space-y-12 max-w-4xl"
               >
-                <h1 className="text-4xl sm:text-5xl md:text-[8rem] font-serif leading-none tracking-[0.05em] py-2 md:py-8 uppercase text-white shadow-2xl break-words">
-                  Shayonce G
-                </h1>
-                <div className="h-[1px] w-8 md:w-24 mx-auto bg-white/30" />
-                <p className="text-[8px] md:text-sm uppercase tracking-[0.5em] md:tracking-[0.8em] text-white/60">
-                  The Architecture of Silhouette
-                </p>
-              </motion.div>
-            </div>
-          </motion.div>
-        ) : (
-          <motion.div 
-            key="hero-hair"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 1.5, ease: LUXURY_EASE }}
-            className="absolute inset-0 w-full h-full"
-          >
-            <motion.div 
-              initial={{ scale: 1.1 }}
-              animate={{ scale: 1 }}
-              transition={{ duration: 3, ease: LUXURY_EASE }}
-              className="absolute inset-0 w-full h-full bg-black"
-            >
-              <Image 
-                src="/image/hair_hero.png" 
-                fill
-                priority
-                className="object-cover brightness-[0.5] opacity-100"
-                alt="Yonce Hair Hero"
-                sizes="100vw"
-              />
-            </motion.div>
-            
-            <div className="absolute inset-0 flex items-center justify-center">
-              <motion.div
-                 initial={{ opacity: 0, y: 30 }}
-                 animate={{ opacity: 1, y: 0 }}
-                 transition={{ delay: 0.5, duration: 2.2, ease: LUXURY_EASE }}
-                 className="text-center space-y-4 md:space-y-10 px-6 max-w-4xl w-full"
-              >
-                <h1 className="text-4xl sm:text-5xl md:text-[8rem] font-serif leading-none tracking-[0.05em] py-4 md:py-8 text-white uppercase shadow-2xl break-words">
-                  Yonce Hair
-                </h1>
-                <div className="h-[1px] w-8 md:w-24 mx-auto bg-white/30" />
-                <p className="text-[8px] md:text-sm uppercase tracking-[0.4em] md:tracking-[0.6em] text-white/60 max-w-[240px] mx-auto md:max-w-none italic font-light">
-                  Luxury hair designed to complete the silhouette.
-                </p>
+                <motion.span 
+                    animate={{ opacity: [0.2, 0.4, 0.2] }}
+                    transition={{ duration: 4, repeat: Infinity }}
+                    className="text-[8px] md:text-[10px] uppercase tracking-[1em] block text-white/40"
+                >
+                    {heroIndex === 0 ? "The Architecture" : "The Silk Edit"}
+                </motion.span>
                 
-                <div className="flex flex-col sm:flex-row gap-3 md:gap-6 mt-8 md:mt-12 justify-center">
-                    <button onClick={() => onNavigate('collections')} className="px-6 md:px-10 py-4 md:py-5 border border-white/20 text-[8px] md:text-[9px] uppercase tracking-[0.4em] md:tracking-[0.5em] hover:bg-white hover:text-black transition-all duration-700 rounded-full bg-white/[0.05] backdrop-blur-2xl text-white">
-                        Explore Yonce Hair
+                <h1 className="text-5xl sm:text-6xl md:text-[10rem] font-serif leading-[0.9] tracking-tighter uppercase text-white drop-shadow-2xl">
+                   {heroIndex === 0 ? "Shayonce G" : "Yonce Hair"}
+                </h1>
+                
+                <div className="h-[1px] w-8 md:w-24 mx-auto bg-white/20" />
+                
+                <p className="text-[10px] md:text-sm uppercase tracking-[0.5em] text-white/40 max-w-[280px] md:max-w-none mx-auto italic font-light">
+                   {heroIndex === 0 ? "The space between silhouettes." : "Completion of the feminine form."}
+                </p>
+
+                <motion.div 
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: 1.5, duration: 1.5 }}
+                    className="flex flex-col sm:flex-row gap-4 md:gap-8 mt-8 md:mt-12 justify-center items-center"
+                >
+                    <button 
+                        onClick={() => onNavigate('collections')} 
+                        className="group relative px-10 py-5 bg-white text-black text-[9px] uppercase tracking-[0.4em] font-bold rounded-full transition-all active:scale-95 shadow-2xl overflow-hidden"
+                    >
+                        <span className="relative z-10">Enter Archive</span>
+                        <motion.div className="absolute inset-0 bg-neutral-200 translate-y-full group-hover:translate-y-0 transition-transform duration-500" />
                     </button>
-                    <button onClick={() => onNavigate('collections')} className="px-6 md:px-10 py-4 md:py-5 border border-white/10 text-[8px] md:text-[9px] uppercase tracking-[0.4em] md:tracking-[0.5em] hover:bg-white hover:text-black transition-all duration-700 rounded-full bg-white/[0.05] backdrop-blur-2xl text-white">
-                        Complete The Look
+                    <button 
+                        onClick={() => onNavigate('collections')} 
+                        className="px-10 py-5 border border-white/20 text-[9px] uppercase tracking-[0.4em] text-white hover:bg-white/10 transition-all rounded-full backdrop-blur-xl active:scale-95"
+                    >
+                        Explore Pieces
                     </button>
-                </div>
+                </motion.div>
               </motion.div>
             </div>
-          </motion.div>
-        )}
+        </motion.div>
       </AnimatePresence>
 
-      {/* Manual Controls */}
-      <div className="absolute inset-x-4 md:inset-x-12 top-1/2 -translate-y-1/2 flex justify-between items-center z-40 pointer-events-none text-white">
+      {/* Luxury Slide Controls - Refined for Mobile Thumb Access */}
+      <div className="absolute inset-x-6 md:inset-x-12 bottom-24 md:top-1/2 md:-translate-y-1/2 flex justify-between items-center z-40 pointer-events-none md:block">
           <button 
             onClick={prevSlide}
-            className="w-10 h-10 md:w-16 md:h-16 flex items-center justify-center rounded-full border border-white/10 bg-white/[0.05] backdrop-blur-xl pointer-events-auto transition-all hover:scale-110 active:scale-95 group"
+            className="md:absolute md:left-0 w-12 h-12 flex items-center justify-center rounded-full border border-white/10 bg-black/20 backdrop-blur-xl pointer-events-auto transition-all active:scale-75 group"
           >
-            <ChevronLeft size={16} className="text-white/40 group-hover:text-white transition-colors" />
+            <ChevronLeft size={16} className="text-white/30 group-hover:text-white transition-colors" />
           </button>
           <button 
             onClick={nextSlide}
-            className="w-10 h-10 md:w-16 md:h-16 flex items-center justify-center rounded-full border border-white/10 bg-white/[0.05] backdrop-blur-xl pointer-events-auto transition-all hover:scale-110 active:scale-95 group"
+            className="md:absolute md:right-0 w-12 h-12 flex items-center justify-center rounded-full border border-white/10 bg-black/20 backdrop-blur-xl pointer-events-auto transition-all active:scale-75 group"
           >
-            <ChevronRight size={16} className="text-white/40 group-hover:text-white transition-colors" />
+            <ChevronRight size={16} className="text-white/30 group-hover:text-white transition-colors" />
           </button>
       </div>
 
-      {/* Slide Indicators */}
-      <div className="absolute right-4 md:right-12 top-1/2 -translate-y-1/2 flex flex-col gap-4 md:gap-6 z-40">
+      {/* Progress Indicators */}
+      <div className="absolute bottom-12 left-1/2 -translate-x-1/2 flex gap-4 z-40">
           {[0, 1].map((i) => (
               <button 
                 key={i}
                 onClick={() => setHeroIndex(i)}
-                className={`w-1 h-8 md:w-1.5 md:h-12 transition-all duration-1000 relative group rounded-full overflow-hidden`}
+                className="group relative py-4 px-2 pointer-events-auto"
               >
-                <div className={`absolute inset-0 w-full h-full transition-all duration-1000 ${i === heroIndex ? 'bg-white shadow-[0_0_20px_#fff]' : 'bg-white/10 group-hover:bg-white/40'}`} />
+                <div className={`w-8 md:w-12 h-[2px] transition-all duration-1000 ${i === heroIndex ? 'bg-white shadow-[0_0_10px_#fff]' : 'bg-white/20 group-hover:bg-white/40'}`} />
               </button>
           ))}
       </div>
 
+      {/* Scroll Hint */}
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{ delay: 4, duration: 2 }}
-        className="absolute bottom-8 md:bottom-12 flex flex-col items-center gap-4 md:gap-6 z-20 pointer-events-none"
+        transition={{ delay: 5, duration: 2 }}
+        className="absolute bottom-6 flex flex-col items-center gap-3 z-20 pointer-events-none hidden md:flex"
       >
-        <span className="text-[8px] uppercase tracking-[0.4em] text-white/20">Slide to Explore</span>
+        <span className="text-[8px] uppercase tracking-[0.4em] text-white/20">Slide to reveal</span>
         <motion.div 
           animate={{ y: [0, 8, 0] }}
-          transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-          className="w-px h-12 md:h-16 bg-gradient-to-b from-white/30 to-transparent"
+          transition={{ duration: 3, repeat: Infinity }}
+          className="w-px h-10 bg-gradient-to-b from-white/30 to-transparent"
         />
       </motion.div>
-      
-      <motion.div 
-        drag="y"
-        dragConstraints={{ top: 0, bottom: 0 }}
-        onDragEnd={(_, info) => {
-          if (info.offset.y > 50) prevSlide();
-          else if (info.offset.y < -50) nextSlide();
-        }}
-        className="absolute inset-0 z-0 pointer-events-auto cursor-ns-resize"
-      />
     </section>
   );
 };
