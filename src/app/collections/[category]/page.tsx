@@ -4,17 +4,22 @@ import { TARI_PRODUCTS, HAIR_PRODUCTS } from '@/lib/constants';
 import { supabase } from '@/lib/supabase';
 import dynamic from 'next/dynamic';
 import React, { useEffect, useState } from 'react';
+import { useParams } from 'next/navigation';
 
 const CollectionsPage = dynamic(() => import('@/components/CollectionsPage'), { ssr: false });
 
-export default function Page({ params }: { params: { category: string } }) {
-  const { category } = params;
+export default function Page() {
+  const params = useParams();
+  const category = params?.category as string;
+  
   const [products, setProducts] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
   const dbCategory = category === 'tari-set' ? 'tari' : (category === 'hair-collection' ? 'hair' : category);
 
   useEffect(() => {
+    if (!category) return;
+    
     const fetchData = async () => {
       const { data, error } = await supabase
         .from('products')
@@ -33,14 +38,14 @@ export default function Page({ params }: { params: { category: string } }) {
       setLoading(false);
     };
     fetchData();
-  }, [dbCategory]);
+  }, [dbCategory, category]);
 
   const displayProducts = products.length > 0 ? products : (
     dbCategory === 'tari' ? TARI_PRODUCTS : 
     (dbCategory === 'hair' || dbCategory === 'curly-braids' || dbCategory === 'ai-braids') ? HAIR_PRODUCTS : []
   );
 
-  const title = category
+  const title = (category || '')
     .split('-')
     .map(word => word.charAt(0).toUpperCase() + word.slice(1))
     .join(' ');
