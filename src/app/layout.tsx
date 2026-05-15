@@ -3,8 +3,8 @@ import "./globals.css";
 import CustomCursor from "@/components/CustomCursor";
 
 export const metadata: Metadata = {
-  title: "SENGANEWO OFFICIAL",
-  description: "Luxury Bridal & Bespoke. Crafted in Lagos.",
+  title: "SHAYONCE G | Official",
+  description: "The Architecture of Silhouette. Luxury fashion and hair atelier.",
 };
 
 export default function RootLayout({

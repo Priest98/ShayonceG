@@ -101,7 +101,7 @@ export default function Home() {
                 transition={{ duration: 1.8, ease: LUXURY_EASE }}
                 className="text-lg md:text-xl tracking-[0.8em] font-serif uppercase text-white"
               >
-                SENGANEWO OFFICIAL
+                SHAYONCE G
               </motion.h1>
               <motion.div 
                 initial={{ scaleX: 0 }}
