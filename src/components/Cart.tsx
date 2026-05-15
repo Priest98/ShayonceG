@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { motion, AnimatePresence } from 'motion/react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { X } from 'lucide-react';
 import { LUXURY_EASE } from '@/lib/constants';
 

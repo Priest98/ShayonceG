@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useRef } from 'react';
-import { motion, useInView } from 'motion/react';
+import { motion, useInView } from 'framer-motion';
 import { VIDEOS, MOTION_SECTION } from '@/lib/constants';
 
 interface ConsultationProps {

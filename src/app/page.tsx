@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'motion/react';
+import { motion, AnimatePresence } from 'framer-motion';
 import Lenis from 'lenis';
 import Navbar from '@/components/Navbar';
 import Hero from '@/components/Hero';

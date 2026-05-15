@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'motion/react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { HAIR_COLLECTION, MOTION_SECTION, LUXURY_EASE } from '@/lib/constants';
 import { ChevronDown } from 'lucide-react';
 

@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { motion } from 'motion/react';
+import { motion } from 'framer-motion';
 import { TARI_VIDEOS, MOTION_SECTION, LUXURY_EASE } from '@/lib/constants';
 import CinematicCarousel from './CinematicCarousel';
 

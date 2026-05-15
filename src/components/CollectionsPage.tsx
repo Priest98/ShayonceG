@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useRef } from 'react';
-import { motion } from 'motion/react';
+import { motion } from 'framer-motion';
 import { MoveRight } from 'lucide-react';
 import { TARI_VIDEOS, MOTION_SECTION } from '@/lib/constants';
 

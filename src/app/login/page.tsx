@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { motion } from 'motion/react';
+import { motion } from 'framer-motion';
 import { supabase } from '@/lib/supabase';
 import { useRouter } from 'next/navigation';
 import { LUXURY_EASE } from '@/lib/constants';

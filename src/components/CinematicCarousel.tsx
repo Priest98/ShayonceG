@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
-import { motion, AnimatePresence } from 'motion/react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronDown, Play, Pause } from 'lucide-react';
 import { LUXURY_EASE } from '@/lib/constants';
 

@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { motion } from 'motion/react';
+import { motion } from 'framer-motion';
 import { MOTION_SECTION } from '@/lib/constants';
 
 const Footer = () => {
