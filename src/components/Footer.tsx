@@ -47,7 +47,7 @@ const Footer = () => {
         </div>
         
         <div className="absolute bottom-12 w-full flex flex-col md:flex-row justify-between px-12 gap-6 text-[8px] uppercase tracking-[0.6em] text-white/5 font-mono">
-            <span>© SHAYONCE G MMXXVI — ALL RIGHTS RESERVED</span>
+            <span>© SENGANEWO OFFICIAL MMXXVI — ALL RIGHTS RESERVED</span>
             <span>Crafted in the Void — Lagos</span>
         </div>
         

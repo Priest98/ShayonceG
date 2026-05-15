@@ -30,7 +30,7 @@ const Navbar: React.FC<NavbarProps> = ({ theme, setTheme, currentPage, setCurren
             onClick={() => setCurrentPage('home')}
             className="text-base md:text-xl tracking-[0.4em] font-serif hover:opacity-50 transition-opacity cursor-pointer"
           >
-            SHAYONCE G
+            SENGANEWO OFFICIAL
           </span>
         </motion.div>
         
