@@ -33,6 +33,9 @@ const Hero: React.FC<HeroProps> = ({ onNavigate }) => {
   // Manual Sliding - Wheel Logic (Robust)
   useEffect(() => {
     const handleWheel = (e: WheelEvent) => {
+      // Ensure window is defined
+      if (typeof window === 'undefined') return;
+      
       // If we are deep into the page, don't intercept
       if (window.scrollY > 100) return;
 
@@ -95,12 +98,12 @@ const Hero: React.FC<HeroProps> = ({ onNavigate }) => {
             
             <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
               <motion.div
-                 initial={{ opacity: 0, y: 30 }}
-                 animate={{ opacity: 1, y: 0 }}
-                 transition={{ delay: 0.5, duration: 2.2, ease: LUXURY_EASE }}
-                 className="text-center space-y-6 md:space-y-10 px-6"
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.5, duration: 2.2, ease: LUXURY_EASE }}
+                className="text-center space-y-6 md:space-y-10 px-6"
               >
-                <h1 className="text-5xl md:text-[8rem] font-serif leading-none tracking-[0.05em] py-2 md:py-8 uppercase">
+                <h1 className="text-5xl md:text-[8rem] font-serif leading-none tracking-[0.05em] py-2 md:py-8 uppercase text-white">
                   Shayonce G
                 </h1>
                 <div className="h-[1px] w-12 md:w-24 mx-auto bg-white/20" />
@@ -142,7 +145,7 @@ const Hero: React.FC<HeroProps> = ({ onNavigate }) => {
                  transition={{ delay: 0.5, duration: 2.2, ease: LUXURY_EASE }}
                  className="text-center space-y-6 md:space-y-10 px-6 max-w-4xl"
               >
-                <h1 className="text-5xl md:text-[8rem] font-serif leading-none tracking-[0.05em] py-4 md:py-8 text-white/90 uppercase">
+                <h1 className="text-5xl md:text-[8rem] font-serif leading-none tracking-[0.05em] py-4 md:py-8 text-white uppercase">
                   Yonce Hair
                 </h1>
                 <div className="h-[1px] w-12 md:w-24 mx-auto bg-white/20" />
@@ -151,10 +154,10 @@ const Hero: React.FC<HeroProps> = ({ onNavigate }) => {
                 </p>
                 
                 <div className="flex flex-col md:flex-row gap-4 md:gap-6 mt-12 justify-center">
-                    <button onClick={() => onNavigate('collections')} className="px-10 py-5 border border-white/10 text-[9px] uppercase tracking-[0.5em] hover:bg-white hover:text-black transition-all duration-700 rounded-full bg-white/[0.03] backdrop-blur-2xl">
+                    <button onClick={() => onNavigate('collections')} className="px-10 py-5 border border-white/10 text-[9px] uppercase tracking-[0.5em] hover:bg-white hover:text-black transition-all duration-700 rounded-full bg-white/[0.03] backdrop-blur-2xl text-white">
                         Explore Yonce Hair
                     </button>
-                    <button onClick={() => onNavigate('collections')} className="px-10 py-5 border border-white/10 text-[9px] uppercase tracking-[0.5em] hover:bg-white hover:text-black transition-all duration-700 rounded-full bg-white/[0.03] backdrop-blur-2xl">
+                    <button onClick={() => onNavigate('collections')} className="px-10 py-5 border border-white/10 text-[9px] uppercase tracking-[0.5em] hover:bg-white hover:text-black transition-all duration-700 rounded-full bg-white/[0.03] backdrop-blur-2xl text-white">
                         Complete The Look
                     </button>
                 </div>
@@ -164,8 +167,8 @@ const Hero: React.FC<HeroProps> = ({ onNavigate }) => {
         )}
       </AnimatePresence>
 
-      {/* Manual Controls - Added Side Arrows for guaranteed manual control */}
-      <div className="absolute inset-x-8 md:inset-x-12 top-1/2 -translate-y-1/2 flex justify-between items-center z-40 pointer-events-none">
+      {/* Manual Controls */}
+      <div className="absolute inset-x-8 md:inset-x-12 top-1/2 -translate-y-1/2 flex justify-between items-center z-40 pointer-events-none text-white">
           <button 
             onClick={prevSlide}
             className="w-12 h-12 md:w-16 md:h-16 flex items-center justify-center rounded-full border border-white/5 bg-white/[0.02] backdrop-blur-xl pointer-events-auto transition-all hover:scale-110 active:scale-95 group"

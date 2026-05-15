@@ -2,15 +2,18 @@
 
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import Lenis from 'lenis';
-import Navbar from '@/components/Navbar';
-import Hero from '@/components/Hero';
-import TariCollection from '@/components/TariCollection';
-import YonceHairSection from '@/components/YonceHairSection';
-import CompleteTheLook from '@/components/CompleteTheLook';
-import Consultation from '@/components/Consultation';
-import Footer from '@/components/Footer';
-import Cart from '@/components/Cart';
+import dynamic from 'next/dynamic';
+
+// Dynamically import client-only components to prevent SSR window errors
+const Navbar = dynamic(() => import('@/components/Navbar'), { ssr: false });
+const Hero = dynamic(() => import('@/components/Hero'), { ssr: false });
+const TariCollection = dynamic(() => import('@/components/TariCollection'), { ssr: false });
+const YonceHairSection = dynamic(() => import('@/components/YonceHairSection'), { ssr: false });
+const CompleteTheLook = dynamic(() => import('@/components/CompleteTheLook'), { ssr: false });
+const Consultation = dynamic(() => import('@/components/Consultation'), { ssr: false });
+const Footer = dynamic(() => import('@/components/Footer'), { ssr: false });
+const Cart = dynamic(() => import('@/components/Cart'), { ssr: false });
+
 import { LUXURY_EASE, TARI_PRODUCTS as STATIC_TARI, HAIR_PRODUCTS as STATIC_HAIR } from '@/lib/constants';
 import { supabase } from '@/lib/supabase';
 import { useRouter } from 'next/navigation';
@@ -22,7 +25,6 @@ export default function Home() {
   const [isCartOpen, setIsCartOpen] = useState(false);
   const router = useRouter();
   
-  // Dynamic Data fallback
   const [tariProducts, setTariProducts] = useState(STATIC_TARI);
   const [hairProducts, setHairProducts] = useState(STATIC_HAIR);
 
@@ -64,26 +66,8 @@ export default function Home() {
   };
 
   useEffect(() => {
-    window.scrollTo(0, 0);
-
-    const lenis = new Lenis({
-      duration: 1.5,
-      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-      orientation: 'vertical',
-      smoothWheel: true,
-    });
-
-    function raf(time: number) {
-      lenis.raf(time);
-      requestAnimationFrame(raf);
-    }
-    requestAnimationFrame(raf);
-
     const timer = setTimeout(() => setLoading(false), 2200);
-    return () => {
-      clearTimeout(timer);
-      lenis.destroy();
-    };
+    return () => clearTimeout(timer);
   }, []);
 
   return (
@@ -118,7 +102,7 @@ export default function Home() {
         theme={theme} 
         setTheme={setTheme} 
         currentPage="home"
-        setCurrentPage={(page) => page === 'collections' ? router.push('/collections/curly-braids') : router.push('/')}
+        setCurrentPage={(page) => page === 'collections' ? router.push('/collections') : router.push('/')}
         cartCount={cart.length}
         setIsCartOpen={setIsCartOpen}
       />
@@ -136,10 +120,10 @@ export default function Home() {
         animate={{ opacity: 1 }}
         transition={{ duration: 1, ease: LUXURY_EASE }}
       >
-        <Hero onNavigate={(page) => page === 'collections' ? router.push('/collections/curly-braids') : router.push('/')} />
-        <TariCollection theme={theme} onNavigate={() => router.push('/collections/tari')} />
-        <YonceHairSection theme={theme} onNavigate={() => router.push('/collections/curly-braids')} />
-        <CompleteTheLook theme={theme} onNavigate={() => router.push('/collections/curly-braids')} />
+        <Hero onNavigate={(page) => page === 'collections' ? router.push('/collections') : router.push('/')} />
+        <TariCollection theme={theme} onNavigate={() => router.push('/collections/tari-set')} />
+        <YonceHairSection theme={theme} onNavigate={() => router.push('/collections/hair-collection')} />
+        <CompleteTheLook theme={theme} onNavigate={() => router.push('/collections/hair-collection')} />
         <Consultation theme={theme} />
         <Footer />
       </motion.div>

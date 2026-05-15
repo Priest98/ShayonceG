@@ -1,49 +1,59 @@
-import CollectionsPage from '@/components/CollectionsPage';
+'use client';
+
 import { TARI_PRODUCTS, HAIR_PRODUCTS } from '@/lib/constants';
-import { Metadata } from 'next';
 import { supabase } from '@/lib/supabase';
+import dynamic from 'next/dynamic';
+import React, { useEffect, useState } from 'react';
 
-export async function generateMetadata({ params }: { params: { category: string } }): Promise<Metadata> {
-  const category = params.category;
-  const title = category
-    .split('-')
-    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-    .join(' ');
+const CollectionsPage = dynamic(() => import('@/components/CollectionsPage'), { ssr: false });
 
-  return {
-    title: `${title} Collection | SHAYONCE G`,
-    description: `Explore the ${title} collection. Luxury bridal and bespoke silhouettes.`,
-  };
-}
-
-export default async function Page({ params }: { params: { category: string } }) {
+export default function Page({ params }: { params: { category: string } }) {
   const { category } = params;
-  
-  // Fetch products for this category from Supabase
-  const { data, error } = await supabase
-    .from('products')
-    .select('*')
-    .eq('category', category)
-    .eq('status', 'published')
-    .order('order_index', { ascending: true });
+  const [products, setProducts] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  // Map database fields to component props
-  const products = (data || []).map(p => ({
-    ...p,
-    isVideo: p.is_video,
-    desc: p.description
-  }));
+  const dbCategory = category === 'tari-set' ? 'tari' : (category === 'hair-collection' ? 'hair' : category);
 
-  // Fallback data if DB is empty (UX precaution)
+  useEffect(() => {
+    const fetchData = async () => {
+      const { data, error } = await supabase
+        .from('products')
+        .select('*')
+        .eq('category', dbCategory)
+        .eq('status', 'published')
+        .order('order_index', { ascending: true });
+
+      if (!error && data) {
+        setProducts(data.map(p => ({
+          ...p,
+          isVideo: p.is_video,
+          desc: p.description
+        })));
+      }
+      setLoading(false);
+    };
+    fetchData();
+  }, [dbCategory]);
+
   const displayProducts = products.length > 0 ? products : (
-    category === 'tari' ? TARI_PRODUCTS : 
-    (category === 'curly-braids' || category === 'ai-braids' || category === 'hair') ? HAIR_PRODUCTS : []
+    dbCategory === 'tari' ? TARI_PRODUCTS : 
+    (dbCategory === 'hair' || dbCategory === 'curly-braids' || dbCategory === 'ai-braids') ? HAIR_PRODUCTS : []
   );
 
   const title = category
     .split('-')
     .map(word => word.charAt(0).toUpperCase() + word.slice(1))
     .join(' ');
+
+  const subtitle = dbCategory === 'tari' 
+    ? "Architectural bridal sets designed for absolute presence. Each piece is a study of form and structured grace."
+    : "Luxury textures and bespoke hair units. The final layer of the feminine silhouette.";
+
+  if (loading) return (
+    <div className="min-h-screen bg-onyx flex items-center justify-center">
+       <div className="w-12 h-12 border-t-2 border-white/20 rounded-full animate-spin" />
+    </div>
+  );
 
   return (
     <CollectionsPage 
@@ -52,7 +62,7 @@ export default async function Page({ params }: { params: { category: string } })
       onAddToCart={() => {}}
       products={displayProducts}
       title={title}
-      subtitle={`The ${title} archive. Architectural silhouettes and luxury textures.`}
+      subtitle={subtitle}
     />
   );
 }

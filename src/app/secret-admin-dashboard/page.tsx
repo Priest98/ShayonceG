@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Plus, LogOut, GripVertical, Trash2, Edit3, Image as ImageIcon, Video, Check, Loader2, X } from 'lucide-react';
+import { Plus, LogOut, GripVertical, Trash2, Edit3, Image as ImageIcon, Video, Check, Loader2, X, Upload } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 import { useRouter } from 'next/navigation';
 import { LUXURY_EASE } from '@/lib/constants';
@@ -76,7 +76,7 @@ const SortableProductItem = ({ product, onDelete, onEdit }: { product: Product, 
           <div className="flex items-center gap-4">
               <h3 className="text-lg font-serif italic truncate">{product.title}</h3>
               <span className={`px-3 py-1 rounded-full text-[8px] uppercase tracking-[0.3em] border ${product.category === 'tari' ? 'border-amber-500/20 text-amber-500/60' : 'border-blue-500/20 text-blue-500/60'}`}>
-                  {product.category}
+                  {product.category === 'tari' ? 'Tari Set' : 'Hair Collection'}
               </span>
           </div>
           <p className="text-[10px] tracking-widest text-white/30 truncate max-w-md">{product.description}</p>
@@ -319,7 +319,7 @@ export default function AdminDashboard() {
 
         <section className="space-y-12">
             <div className="flex justify-between items-end border-b border-white/5 pb-8">
-                <h2 className="text-2xl font-serif italic lowercase tracking-widest opacity-60">The Collections</h2>
+                <h2 className="text-2xl font-serif italic lowercase tracking-widest opacity-60">The Archive</h2>
                 <div className="flex gap-6 text-[9px] uppercase tracking-[0.4em] opacity-30">
                     <span>Drag to Reorder</span>
                 </div>
@@ -379,9 +379,9 @@ export default function AdminDashboard() {
 
                     <div className="space-y-16">
                         <div className="space-y-4">
-                            <span className="text-[9px] uppercase tracking-[0.8em] text-white/20">Entry Studio</span>
+                            <span className="text-[9px] uppercase tracking-[0.8em] text-white/20">Studio Upload</span>
                             <h2 className="text-4xl font-serif lowercase italic tracking-tighter">
-                                {editingProduct ? 'Edit Masterpiece' : 'Create New Piece'}
+                                {editingProduct ? 'Update Masterpiece' : 'Publish New Piece'}
                             </h2>
                         </div>
 
@@ -394,7 +394,7 @@ export default function AdminDashboard() {
                                     {uploading ? (
                                         <div className="flex flex-col items-center gap-4">
                                             <Loader2 className="animate-spin" size={24} />
-                                            <span className="text-[10px] uppercase tracking-[0.4em]">Uploading...</span>
+                                            <span className="text-[10px] uppercase tracking-[0.4em]">Processing...</span>
                                         </div>
                                     ) : src ? (
                                         isVideo ? (
@@ -404,13 +404,13 @@ export default function AdminDashboard() {
                                         )
                                     ) : (
                                         <>
-                                            <div className="flex flex-col items-center gap-4 opacity-30 group-hover:opacity-60 transition-opacity">
-                                                <div className="w-16 h-16 rounded-full bg-white/5 flex items-center justify-center">
-                                                    <Plus size={24} />
+                                            <div className="flex flex-col items-center gap-4 opacity-30 group-hover:opacity-60 transition-opacity text-center px-8">
+                                                <div className="w-16 h-16 rounded-full bg-white/5 flex items-center justify-center mb-4">
+                                                    <Upload size={24} />
                                                 </div>
-                                                <span className="text-[10px] uppercase tracking-[0.4em]">Drop Media Here</span>
+                                                <span className="text-[10px] uppercase tracking-[0.4em]">Drop Editorial Media Here</span>
+                                                <p className="text-[8px] uppercase tracking-[0.2em] opacity-20">Preferred 3:4 Vertical Aspect Ratio</p>
                                             </div>
-                                            <p className="text-[8px] uppercase tracking-[0.2em] opacity-20">Instagram Format Preferred</p>
                                         </>
                                     )}
                                     <input type="file" hidden ref={fileInputRef} onChange={handleFileUpload} accept="image/*,video/*" />
@@ -419,32 +419,32 @@ export default function AdminDashboard() {
                                 <div className="flex gap-4">
                                     <div className={`flex-1 p-6 border border-white/5 rounded-3xl flex items-center gap-4 transition-all ${!isVideo && src ? 'bg-white/10 border-white/20' : 'bg-white/[0.02]'}`}>
                                         <ImageIcon size={14} className="opacity-20" />
-                                        <span className="text-[9px] uppercase tracking-[0.2em] opacity-40">Static</span>
+                                        <span className="text-[9px] uppercase tracking-[0.2em] opacity-40">Still Image</span>
                                     </div>
                                     <div className={`flex-1 p-6 border border-white/5 rounded-3xl flex items-center gap-4 transition-all ${isVideo && src ? 'bg-white/10 border-white/20' : 'bg-white/[0.02]'}`}>
                                         <Video size={14} className="opacity-20" />
-                                        <span className="text-[9px] uppercase tracking-[0.2em] opacity-40">Motion</span>
+                                        <span className="text-[9px] uppercase tracking-[0.2em] opacity-40">Motion Clip</span>
                                     </div>
                                 </div>
                             </div>
 
                             <div className="space-y-12">
                                 <div className="space-y-4">
-                                    <label className="text-[9px] uppercase tracking-[0.4em] text-white/20">Title</label>
-                                    <input value={title} onChange={e => setTitle(e.target.value)} type="text" className="w-full bg-transparent border-b border-white/10 py-4 text-sm tracking-widest outline-none focus:border-white/40 transition-colors" placeholder="Signature Piece Name" />
+                                    <label className="text-[9px] uppercase tracking-[0.4em] text-white/20">Piece Name</label>
+                                    <input value={title} onChange={e => setTitle(e.target.value)} type="text" className="w-full bg-transparent border-b border-white/10 py-4 text-sm tracking-widest outline-none focus:border-white/40 transition-colors" placeholder="e.g. Tari Signature Ivory" />
                                 </div>
                                 <div className="grid grid-cols-2 gap-8">
                                     <div className="space-y-4">
-                                        <label className="text-[9px] uppercase tracking-[0.4em] text-white/20">Price (₦)</label>
+                                        <label className="text-[9px] uppercase tracking-[0.4em] text-white/20">Investment (₦)</label>
                                         <input value={price} onChange={e => setPrice(e.target.value)} type="number" className="w-full bg-transparent border-b border-white/10 py-4 text-sm tracking-widest outline-none focus:border-white/40 transition-colors" placeholder="0" />
                                     </div>
                                     <div className="space-y-4">
-                                        <label className="text-[9px] uppercase tracking-[0.4em] text-white/20">Collection</label>
+                                        <label className="text-[9px] uppercase tracking-[0.4em] text-white/20">Archive Category</label>
                                         <select value={category} onChange={e => setCategory(e.target.value as any)} className="w-full bg-transparent border-b border-white/10 py-4 text-sm tracking-widest outline-none focus:border-white/40 transition-colors cursor-pointer">
-                                            <option value="tari">Tari Set</option>
-                                            <option value="hair">Yonce Hair</option>
-                                            <option value="curly-braids">Curly Braids</option>
-                                            <option value="ai-braids">AI Braids</option>
+                                            <option value="tari">Tari Set Collection</option>
+                                            <option value="hair">Yonce Hair Collection</option>
+                                            <option value="curly-braids">Curly Braids Archive</option>
+                                            <option value="ai-braids">AI Braids Experiment</option>
                                         </select>
                                     </div>
                                 </div>
@@ -457,12 +457,12 @@ export default function AdminDashboard() {
                                     <button 
                                         onClick={() => handleSave('published')}
                                         disabled={loading}
-                                        className="flex-1 py-6 bg-white text-black text-[10px] uppercase tracking-[0.4em] font-bold rounded-full transition-all hover:scale-105 active:scale-95 shadow-xl disabled:opacity-20"
+                                        className="flex-1 py-6 bg-white text-black text-[10px] uppercase tracking-[0.5em] font-bold rounded-full transition-all hover:scale-105 active:scale-95 shadow-xl disabled:opacity-20"
                                     >
-                                        {editingProduct ? 'Update Piece' : 'Publish Piece'}
+                                        {editingProduct ? 'Update Archive' : 'Publish to Archive'}
                                     </button>
                                     <button onClick={() => handleSave('draft')} className="px-10 py-6 border border-white/10 text-[10px] uppercase tracking-[0.4em] rounded-full hover:bg-white/5">
-                                        Draft
+                                        Save Draft
                                     </button>
                                 </div>
                             </div>
@@ -472,6 +472,8 @@ export default function AdminDashboard() {
             </div>
         )}
       </AnimatePresence>
+      
+      <div className="fixed inset-0 pointer-events-none opacity-[0.03] z-[100] bg-[url('/image/noise.svg')] mix-blend-overlay" />
     </div>
   );
 }

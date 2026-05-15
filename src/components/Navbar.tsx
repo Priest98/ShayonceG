@@ -19,9 +19,17 @@ const Navbar: React.FC<NavbarProps> = ({ theme, setTheme, currentPage, setCurren
   const [menuOpen, setMenuOpen] = useState(false);
   const router = useRouter();
 
+  useEffect(() => {
+    if (menuOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'auto';
+    }
+  }, [menuOpen]);
+
   return (
     <>
-      <nav className="fixed top-0 left-0 w-full p-6 md:p-12 z-50 flex justify-between items-center pointer-events-none transition-all duration-700">
+      <nav className={`fixed top-0 left-0 w-full p-6 md:p-12 z-50 flex justify-between items-center pointer-events-none transition-all duration-700 ${theme === 'dark' ? 'text-white' : 'text-black'}`}>
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -89,10 +97,10 @@ const Navbar: React.FC<NavbarProps> = ({ theme, setTheme, currentPage, setCurren
                     initial={{ opacity: 0, x: -30 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: i * 0.1 + 0.3, duration: 1, ease: LUXURY_EASE }}
-                    className="group flex items-center gap-6 md:gap-10 cursor-pointer"
+                    className="group flex items-center gap-6 md:gap-10 cursor-pointer text-white"
                     onClick={() => {
-                        if (item === "Collections") router.push('/collections/curly-braids');
-                        else setCurrentPage('home');
+                        if (item === "Collections") router.push('/collections');
+                        else router.push('/');
                         setMenuOpen(false);
                     }}
                   >
