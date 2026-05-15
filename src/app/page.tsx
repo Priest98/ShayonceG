@@ -10,19 +10,19 @@ import YonceHairSection from '@/components/YonceHairSection';
 import CompleteTheLook from '@/components/CompleteTheLook';
 import Consultation from '@/components/Consultation';
 import Footer from '@/components/Footer';
-import CollectionsPage from '@/components/CollectionsPage';
 import Cart from '@/components/Cart';
 import { LUXURY_EASE, TARI_PRODUCTS as STATIC_TARI, HAIR_PRODUCTS as STATIC_HAIR } from '@/lib/constants';
 import { supabase } from '@/lib/supabase';
+import { useRouter } from 'next/navigation';
 
 export default function Home() {
   const [loading, setLoading] = useState(true);
   const [theme, setTheme] = useState<'light' | 'dark'>('dark');
-  const [currentPage, setCurrentPage] = useState<'home' | 'collections'>('home');
   const [cart, setCart] = useState<any[]>([]);
   const [isCartOpen, setIsCartOpen] = useState(false);
+  const router = useRouter();
   
-  // Dynamic Data
+  // Dynamic Data fallback
   const [tariProducts, setTariProducts] = useState(STATIC_TARI);
   const [hairProducts, setHairProducts] = useState(STATIC_HAIR);
 
@@ -84,7 +84,7 @@ export default function Home() {
       clearTimeout(timer);
       lenis.destroy();
     };
-  }, [currentPage]);
+  }, []);
 
   return (
     <main className="relative min-h-screen">
@@ -117,8 +117,8 @@ export default function Home() {
       <Navbar 
         theme={theme} 
         setTheme={setTheme} 
-        currentPage={currentPage}
-        setCurrentPage={setCurrentPage}
+        currentPage="home"
+        setCurrentPage={(page) => page === 'collections' ? router.push('/collections/curly-braids') : router.push('/')}
         cartCount={cart.length}
         setIsCartOpen={setIsCartOpen}
       />
@@ -131,34 +131,18 @@ export default function Home() {
         theme={theme}
       />
 
-      <AnimatePresence mode="wait">
-        {currentPage === 'home' ? (
-          <motion.div
-            key="home-content"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 1, ease: LUXURY_EASE }}
-          >
-            <Hero onNavigate={setCurrentPage} />
-            <TariCollection theme={theme} onNavigate={() => setCurrentPage('collections')} />
-            <YonceHairSection theme={theme} onNavigate={() => setCurrentPage('collections')} />
-            <CompleteTheLook theme={theme} onNavigate={() => setCurrentPage('collections')} />
-            <Consultation theme={theme} />
-            <Footer />
-          </motion.div>
-        ) : (
-          <CollectionsPage 
-            key="collections" 
-            onBack={() => setCurrentPage('home')} 
-            theme={theme} 
-            onAddToCart={addToCart}
-            cartCount={cart.length}
-            tariProducts={tariProducts}
-            hairProducts={hairProducts}
-          />
-        )}
-      </AnimatePresence>
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 1, ease: LUXURY_EASE }}
+      >
+        <Hero onNavigate={(page) => page === 'collections' ? router.push('/collections/curly-braids') : router.push('/')} />
+        <TariCollection theme={theme} onNavigate={() => router.push('/collections/tari')} />
+        <YonceHairSection theme={theme} onNavigate={() => router.push('/collections/curly-braids')} />
+        <CompleteTheLook theme={theme} onNavigate={() => router.push('/collections/curly-braids')} />
+        <Consultation theme={theme} />
+        <Footer />
+      </motion.div>
     </main>
   );
 }

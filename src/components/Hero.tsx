@@ -26,7 +26,7 @@ const Hero: React.FC<HeroProps> = ({ onNavigate }) => {
 
   // Automatic Sliding
   useEffect(() => {
-    const interval = setInterval(nextSlide, 8000);
+    const interval = setInterval(nextSlide, 5000);
     return () => clearInterval(interval);
   }, [nextSlide]);
 

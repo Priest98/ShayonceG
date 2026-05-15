@@ -32,7 +32,7 @@ interface Product {
   description: string;
   src: string;
   is_video: boolean;
-  category: 'tari' | 'hair';
+  category: 'tari' | 'hair' | 'curly-braids' | 'ai-braids';
   order_index: number;
   status: 'draft' | 'published';
 }
@@ -118,7 +118,7 @@ export default function AdminDashboard() {
   const [title, setTitle] = useState('');
   const [price, setPrice] = useState('');
   const [description, setDescription] = useState('');
-  const [category, setCategory] = useState<'tari' | 'hair'>('tari');
+  const [category, setCategory] = useState<'tari' | 'hair' | 'curly-braids' | 'ai-braids'>('tari');
   const [src, setSrc] = useState('');
   const [isVideo, setIsVideo] = useState(false);
   const [uploading, setUploading] = useState(false);
@@ -443,6 +443,8 @@ export default function AdminDashboard() {
                                         <select value={category} onChange={e => setCategory(e.target.value as any)} className="w-full bg-transparent border-b border-white/10 py-4 text-sm tracking-widest outline-none focus:border-white/40 transition-colors cursor-pointer">
                                             <option value="tari">Tari Set</option>
                                             <option value="hair">Yonce Hair</option>
+                                            <option value="curly-braids">Curly Braids</option>
+                                            <option value="ai-braids">AI Braids</option>
                                         </select>
                                     </div>
                                 </div>

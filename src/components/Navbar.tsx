@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 import { LUXURY_EASE } from '@/lib/constants';
 
 interface NavbarProps {
@@ -16,6 +17,7 @@ interface NavbarProps {
 
 const Navbar: React.FC<NavbarProps> = ({ theme, setTheme, currentPage, setCurrentPage, cartCount, setIsCartOpen }) => {
   const [menuOpen, setMenuOpen] = useState(false);
+  const router = useRouter();
 
   return (
     <>
@@ -27,7 +29,7 @@ const Navbar: React.FC<NavbarProps> = ({ theme, setTheme, currentPage, setCurren
           className="pointer-events-auto"
         >
           <span 
-            onClick={() => setCurrentPage('home')}
+            onClick={() => router.push('/')}
             className="text-base md:text-xl tracking-[0.4em] font-serif hover:opacity-50 transition-opacity cursor-pointer"
           >
             SHAYONCE G
@@ -89,7 +91,7 @@ const Navbar: React.FC<NavbarProps> = ({ theme, setTheme, currentPage, setCurren
                     transition={{ delay: i * 0.1 + 0.3, duration: 1, ease: LUXURY_EASE }}
                     className="group flex items-center gap-6 md:gap-10 cursor-pointer"
                     onClick={() => {
-                        if (item === "Collections") setCurrentPage('collections');
+                        if (item === "Collections") router.push('/collections/curly-braids');
                         else setCurrentPage('home');
                         setMenuOpen(false);
                     }}
