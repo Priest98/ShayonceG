@@ -17,7 +17,7 @@ const Hero: React.FC<HeroProps> = ({ onNavigate }) => {
   const containerRef = useRef<HTMLElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
 
-  // Parallax effect for mobile immersion
+  // Parallax effect
   const { scrollY } = useScroll();
   const yParallax = useTransform(scrollY, [0, 1000], [0, 300]);
   const scaleParallax = useTransform(scrollY, [0, 500], [1, 1.1]);
@@ -37,14 +37,14 @@ const Hero: React.FC<HeroProps> = ({ onNavigate }) => {
   }, [heroIndex]);
 
   useEffect(() => {
-    const interval = setInterval(nextSlide, 8000); // Slower for more luxury feel
+    const interval = setInterval(nextSlide, 8000);
     return () => clearInterval(interval);
   }, [nextSlide]);
 
   return (
     <section 
       ref={containerRef}
-      className="relative h-screen w-full flex items-center justify-center overflow-hidden z-10 select-none touch-none bg-black"
+      className="relative h-screen w-full flex items-center justify-center overflow-hidden z-10 bg-black"
     >
       <AnimatePresence mode="wait">
         <motion.div 
@@ -55,7 +55,6 @@ const Hero: React.FC<HeroProps> = ({ onNavigate }) => {
             transition={{ duration: 2, ease: LUXURY_EASE }}
             className="absolute inset-0 w-full h-full"
         >
-            {/* Background Layer with Parallax */}
             <motion.div 
                 style={{ y: yParallax, scale: scaleParallax }}
                 className="absolute inset-0 w-full h-full bg-black"
@@ -82,10 +81,8 @@ const Hero: React.FC<HeroProps> = ({ onNavigate }) => {
                 )}
             </motion.div>
 
-            {/* Cinematic Gradient Overlay */}
             <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-transparent to-black/60 pointer-events-none" />
             
-            {/* Content Layer */}
             <div className="absolute inset-0 flex items-center justify-center p-6 text-center">
               <motion.div
                 initial={{ opacity: 0, y: 30 }}
@@ -119,14 +116,14 @@ const Hero: React.FC<HeroProps> = ({ onNavigate }) => {
                 >
                     <button 
                         onClick={() => onNavigate('collections')} 
-                        className="group relative px-10 py-5 bg-white text-black text-[9px] uppercase tracking-[0.4em] font-bold rounded-full transition-all active:scale-95 shadow-2xl overflow-hidden"
+                        className="group relative px-10 py-5 bg-white text-black text-[9px] uppercase tracking-[0.4em] font-bold rounded-full transition-all active:scale-95 shadow-2xl overflow-hidden pointer-events-auto"
                     >
                         <span className="relative z-10">Enter Archive</span>
                         <motion.div className="absolute inset-0 bg-neutral-200 translate-y-full group-hover:translate-y-0 transition-transform duration-500" />
                     </button>
                     <button 
                         onClick={() => onNavigate('collections')} 
-                        className="px-10 py-5 border border-white/20 text-[9px] uppercase tracking-[0.4em] text-white hover:bg-white/10 transition-all rounded-full backdrop-blur-xl active:scale-95"
+                        className="px-10 py-5 border border-white/20 text-[9px] uppercase tracking-[0.4em] text-white hover:bg-white/10 transition-all rounded-full backdrop-blur-xl active:scale-95 pointer-events-auto"
                     >
                         Explore Pieces
                     </button>
@@ -136,7 +133,7 @@ const Hero: React.FC<HeroProps> = ({ onNavigate }) => {
         </motion.div>
       </AnimatePresence>
 
-      {/* Luxury Slide Controls - Refined for Mobile Thumb Access */}
+      {/* Luxury Slide Controls */}
       <div className="absolute inset-x-6 md:inset-x-12 bottom-24 md:top-1/2 md:-translate-y-1/2 flex justify-between items-center z-40 pointer-events-none md:block">
           <button 
             onClick={prevSlide}
@@ -160,25 +157,21 @@ const Hero: React.FC<HeroProps> = ({ onNavigate }) => {
                 onClick={() => setHeroIndex(i)}
                 className="group relative py-4 px-2 pointer-events-auto"
               >
-                <div className={`w-8 md:w-12 h-[2px] transition-all duration-1000 ${i === heroIndex ? 'bg-white shadow-[0_0_10px_#fff]' : 'bg-white/20 group-hover:bg-white/40'}`} />
+                <div className={`w-8 md:w-12 h-[2px] transition-all duration-1000 ${i === heroIndex ? 'bg-white shadow-[0_0_20px_#fff]' : 'bg-white/20 group-hover:bg-white/40'}`} />
               </button>
           ))}
       </div>
 
-      {/* Scroll Hint */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 5, duration: 2 }}
-        className="absolute bottom-6 flex flex-col items-center gap-3 z-20 pointer-events-none hidden md:flex"
-      >
-        <span className="text-[8px] uppercase tracking-[0.4em] text-white/20">Slide to reveal</span>
-        <motion.div 
-          animate={{ y: [0, 8, 0] }}
-          transition={{ duration: 3, repeat: Infinity }}
-          className="w-px h-10 bg-gradient-to-b from-white/30 to-transparent"
-        />
-      </motion.div>
+      {/* Optimized Swipe Layer for Mobile - Horizontal Only to preserve vertical scroll */}
+      <motion.div 
+        drag="x"
+        dragConstraints={{ left: 0, right: 0 }}
+        onDragEnd={(_, info) => {
+          if (info.offset.x > 50) prevSlide();
+          else if (info.offset.x < -50) nextSlide();
+        }}
+        className="absolute inset-0 z-0 pointer-events-auto cursor-ew-resize"
+      />
     </section>
   );
 };
